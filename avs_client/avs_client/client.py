@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import json
 import http
+import typing
 import uuid
 
 from requests_toolbelt import MultipartDecoder, MultipartEncoder
@@ -38,6 +39,17 @@ class AlexaVoiceServiceClient:
         )
 
     def synchronise_device_state(self):
+        """
+        Synchronizing the component states with AVS
+
+        Components state must be synchronised with AVS after establishing the
+        downchannel stream in order to create a persistent connection with AVS.
+
+        Note that currently this function is paying lip-service synchronising
+        the device state: the device state is hard-coded.
+
+        """
+
         payload = {
             'context': self.device_manager.get_device_state(),
             'event': {
@@ -75,7 +87,7 @@ class AlexaVoiceServiceClient:
         response = self.connection.get_response(stream_id)
         assert response.status == http.client.NO_CONTENT
 
-    def get_request_data(self):
+    def get_request_data(self) -> dict:
         return {
             'context': self.device_manager.get_device_state(),
             'event': {
@@ -92,7 +104,17 @@ class AlexaVoiceServiceClient:
             }
         }
 
-    def send_audio_file(self, audio_file):
+    def send_audio_file(self, audio_file) -> bytes:
+        """
+        Send audio to AVS
+        
+        The file-like object are steaming uploaded for improved latency.
+        
+        Returns:
+            bytes -- wav audio bytes returned from AVS
+
+        """
+
         multipart_data = MultipartEncoder(
             fields=[
                 (
@@ -129,7 +151,7 @@ class AlexaVoiceServiceClient:
         return self.parse_response(response)
 
     @staticmethod
-    def parse_response(response):
+    def parse_response(response) -> typing.Union[bytes, None]:
         if response.status == 204:
             return None
         if not response.status == 200:
@@ -144,6 +166,15 @@ class AlexaVoiceServiceClient:
                 return part.content
 
     def update_ping_deadline(self):
+        """
+        Updates time when ping should be called.
+        
+        The client must send a PING frame to AVS every five minutes when the
+        connection is idle. Failure to do so will result in a closed
+        connection.
+        
+        """
+
         self.ping_deadline = datetime.utcnow() + timedelta(seconds=60*4)
 
     def should_ping(self):
@@ -156,12 +187,12 @@ class AlexaVoiceServiceClient:
         self.connection.ping(b'********')
 
     @staticmethod
-    def generate_dialogue_id():
+    def generate_dialogue_id() -> str:
         return str(uuid.uuid4())
 
     @staticmethod
-    def generate_message_id():
+    def generate_message_id() -> str:
         return str(uuid.uuid4())
 
-    def get_headers(self):
+    def get_headers(self) -> dict:
         return self.authenticator.get_authentication_headers()

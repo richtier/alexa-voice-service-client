@@ -4,8 +4,9 @@ from freezegun import freeze_time
 import pytest
 from requests.exceptions import HTTPError
 
-from avs_client.authentication import AlexaVoiceServiceTokenAuthenticator
-
+from avs_client.avs_client.authentication import (
+    AlexaVoiceServiceTokenAuthenticator
+)
 
 @pytest.fixture
 def token_retrieve_200(requests_mocker):

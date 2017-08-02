@@ -7,7 +7,7 @@ from freezegun import freeze_time
 import pytest
 from requests.exceptions import HTTPError
 
-from avs_client.client import AlexaVoiceServiceClient
+from avs_client.avs_client.client import AlexaVoiceServiceClient
 from tests.avs_client.helpers import TestClientMixin, parse_multipart
 
 

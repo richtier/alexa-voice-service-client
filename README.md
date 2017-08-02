@@ -14,7 +14,7 @@ pip install git+https://github.com/richtier/alexa-browser-client.git@v0.1.0#egg=
         secret='my-secret',
         refresh_token='my-refresh-token',
     )
-    alexa_client.connect()  # authenticate, create downstream connection, and other handshaking
+    alexa_client.connect()  # authenticate, create downchannel stream, and other handshaking
     with open('/path/to/little_endian_16000_sample_rate_file.wav', 'rb') as f:
         alexa_response_audio = alexa_client.send_audio_file(f)
     with open('/path/to/output.wav', 'wb') as f:
@@ -44,6 +44,7 @@ ping_thread = threading.Thread(target=ping_avs)
 ping_thread.start()
 ```
 
+For more information see AVS's documentation: https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection
 
 ### Steaming audio to AVS
 `alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be a file on your filesystem, an in-memory file streaming audio from your microphone in real-time, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
@@ -67,7 +68,15 @@ Instantiating the client requires some valid AVS authentication details:
 
 ### Refresh token
 
-When the client authenticates with an AVS access token, AVS will return a access token, which is used in subsequent requests to authenticate the request. The access token is valid for only one hour. You can exchange the refresh token for a new access and tokens. Make sure you set `ALEXA_VOICE_SERVICE_REFRESH_TOKEN` to enable this functionality.
+When the client authenticates with AVS using a `client_id` and `client_secret` AVS returns an access token that authorizes subsequent requests. The access token expires after an hour. To automatically generate a new access token once the old one expires, a  `refresh_token` can be exposed. To enable this functionality set `ALEXA_VOICE_SERVICE_REFRESH_TOKEN`.
+
+To get your refresh token for the first time you will need to authenticate with Amazon via their web interface. To do this run 
+
+```
+ALEXA_VOICE_SERVICE_DEVICE_TYPE_ID=enter-value-here ALEXA_VOICE_SERVICE_CLIENT_ID=enter-value-here ALEXA_VOICE_SERVICE_CLIENT_SECRET=enter-value-here python ./avs_client/refreshtoken/serve.py
+```
+
+Then go to `http://localhost:8000/amazon-login/` and follow the on-screen instructions. Set `ALEXA_VOICE_SERVICE_REFRESH_TOKEN` setting to the `refresh_token` value returned by Amazon.
 
 ## Other projects
 
