@@ -5,7 +5,6 @@ import requests
 from urllib.parse import urlencode, quote, parse_qsl, urlparse
 
 
-
 class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
     oauth2_url = 'https://www.amazon.com/ap/oa'
     oauth2_token_url = 'https://api.amazon.com/auth/o2/token'

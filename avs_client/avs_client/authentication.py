@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from avs_client import helpers
+from avs_client.avs_client import helpers
 
 
 class AlexaVoiceServiceTokenAuthenticator:

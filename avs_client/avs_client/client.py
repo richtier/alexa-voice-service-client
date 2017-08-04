@@ -8,7 +8,7 @@ from requests_toolbelt import MultipartDecoder, MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
 
-from avs_client import authentication, device
+from avs_client.avs_client import authentication, device
 
 
 class AlexaVoiceServiceClient:
