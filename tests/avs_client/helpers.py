@@ -42,7 +42,7 @@ class DummySocket:
         pass
 
 
-class TestClientMixin:
+class TestConnectionMixin:
     """
     Mixin for use with avs_client.client.AlexaVoiceServiceClient that
     creates a test double that mocks out non-deterministic methods and external
