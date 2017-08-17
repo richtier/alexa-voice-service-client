@@ -45,7 +45,7 @@ class AlexaVoiceServiceTokenAuthenticator:
     def prefetch_api_token(self):
         self.retrieve_api_token()
 
-    def get_authentication_headers(self) -> dict:
+    def get_headers(self) -> dict:
         return {
             'Authorization': 'Bearer {0}'.format(self.retrieve_api_token())
         }
