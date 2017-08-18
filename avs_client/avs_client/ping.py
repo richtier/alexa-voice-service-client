@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 class PingManager:
     ping_deadline = None
+    delta = timedelta(seconds=60*4)
 
     @contextlib.contextmanager
     def update_ping_deadline(self):
@@ -15,13 +16,11 @@ class PingManager:
         connection.
         
         """
-
         yield
-        self.ping_deadline = datetime.utcnow() + timedelta(seconds=60*4)
+        self.ping_deadline = datetime.utcnow() + self.delta
 
     def should_ping(self):
         return (
             self.ping_deadline is not None and
             datetime.utcnow() >= self.ping_deadline
         )
-
