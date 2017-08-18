@@ -11,7 +11,7 @@ def test_parser_defaults():
     ])
 
     assert args.address == 'localhost'
-    assert args.port == 8000
+    assert args.port == 9000
     assert args.client_id == 'client-id-here'
     assert args.client_secret == 'client-secret-here'
     assert args.device_type_id == 'device-type-id-here'

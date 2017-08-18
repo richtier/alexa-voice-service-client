@@ -135,8 +135,6 @@ class ConnectionManager:
 
     def ping(self):
         self.connection.ping(b'********')
-        print('pinging')
-
 
     @staticmethod
     def parse_response(response) -> typing.Union[bytes, None]:

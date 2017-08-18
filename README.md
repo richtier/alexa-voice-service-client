@@ -24,17 +24,50 @@ with open('./output.wav', 'wb') as f:
     f.write(alexa_response_audio)
 ```
 
-Now have a listen to `output.wave` and Alexa should tell you the time.
+Now listen to `output.wave` and Alexa should tell you the time.
 
-### Persistent AVS connection ##
+## Authentication ##
 
-Calling `alexa_client.connect()` creates a persistent HTTP2 connection to AVS. The connection will be closed by AVS if no frames are sent through it within five minutes. To keep the connection open call `alexa_client.alexa_client.conditional_ping()` to ping when the connection has not been used within the deadline:
+To use AVS you must first have a [developer account](http://developer.amazon.com). Then register your product [here](https://developer.amazon.com/avs/home.html#/avs/products/new). Choose "Application" under "Is your product an app or a device"?
 
-```py
-alexa_client.conditional_ping()
+The client requires your `client_id`, `secret` and `refresh_token`:
+
+| client kwarg  | Notes |
+| ------------- | ------------------------------------- |
+| `client_id`     | Retrieve by clicking on the your product listed [here](https://developer.amazon.com/avs/home.html#/avs/home) |
+| `secret`        | Retrieve by clicking on the your product listed [here](https://developer.amazon.com/avs/home.html#/avs/home) |
+| `refresh_token` | You must generate this. [See here](#refresh-token) |
+
+### Refresh token ###
+
+You will need to login to Amazon via a web browser to get your refresh token.
+
+To enable this first go [here](https://developer.amazon.com/avs/home.html#/avs/home) and click on your product to set some security settings under `Security Profile`:
+
+| setting             | value                            |
+| ------------------- | ---------------------------------|
+| Allowed Origins     | https://localhost:9000           |
+| Allowed Return URLs | https://localhost:9000/callback/ |
+
+Then run:
+
+```sh
+python ./avs_client/refreshtoken/serve.py \
+    --device-type-id=enter-device-type-id-here \
+    --client-id=enter-client-id-here \
+    --client-secret=enter-client-secret-here
 ```
 
-The ping code could be placed in a thread to ensure the connection stays open during long running processes:
+Follow the on-screen instructions shown at `http://localhost:9000` in your web browser. On completion Amazon will return your `refresh_token`.
+
+## Steaming audio to AVS ##
+`alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
+
+AVS requires the audio data to be 16bit Linear PCM (LPCM16), 16kHz sample rate, single-channel, and little endian.
+
+## Persistent AVS connection ##
+
+Calling `alexa_client.connect()` creates a persistent connection to AVS. The connection may get forcefully closed due to inactivity. Keep open by calling `alexa_client.alexa_client.conditional_ping()`:
 
 ```py
 import threading
@@ -48,37 +81,7 @@ ping_thread = threading.Thread(target=ping_avs)
 ping_thread.start()
 ```
 
-For more information see AVS's documentation: https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection
-
-### Steaming audio to AVS ###
-`alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
-
-AVS requires the audio data to be 16bit Linear PCM (LPCM16), 16kHz sample rate, single-channel, and little endian.
-
-## Authentication ##
-
-Instantiating the client requires some valid AVS authentication details:
-
-| client kwarg | Notes                                                                |
-| --------------- | ---------------------------------------------------------------------- |
-| client_id     | See [AVS documentation](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/authorizing-your-alexa-enabled-product-from-a-website#lwa)                               |
-| secret        | See [AVS documentation](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/authorizing-your-alexa-enabled-product-from-a-website#lwa)                                |
-| refresh_token | Set this to the value returned when you [retrieve your refresh token](#refresh-token) |
-
-### Refresh token ##
-
-When the client authenticates with AVS using a `client_id` and `client_secret` AVS returns an access token that authorizes subsequent requests. The access token expires after an hour. To automatically generate a new access token once the old one expires, a  `refresh_token` can be exposed. To enable this functionality specify `refresh_token` when instantiating the client.
-
-To get your refresh token for the first time you will need to authenticate with Amazon via their web interface. To do this run 
-
-```sh
-python ./avs_client/refreshtoken/serve.py \
-    --device-type-id=enter-device-type-id-here \
-    --client-id=enter-client-id-here \
-    --client-secret=enter-client-secret-here
-```
-
-Then go to `http://localhost:8000` and follow the on-screen instructions. Use the `refresh_token` returned by Amazon when you instantiate the client.
+You will only need this if you intend to run the process for more than five minutes. [More information](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection).
 
 ## Other projects ##
 

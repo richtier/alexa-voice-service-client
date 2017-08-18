@@ -9,4 +9,4 @@ parser.add_argument(
     '-d', '--device-type-id', help='AVS device type id', required=True
 )
 parser.add_argument('-a', '--address', default='localhost')
-parser.add_argument('-p', '--port', default=8000, type=int)
+parser.add_argument('-p', '--port', default=9000, type=int)
