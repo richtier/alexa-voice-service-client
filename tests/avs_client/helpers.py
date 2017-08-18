@@ -50,20 +50,6 @@ class TestConnectionMixin:
 
     """
 
-    @staticmethod
-    def generate_dialogue_id():
-        # override existing non-deterministic method
-        return 'dialogue-id'
-
-    @staticmethod
-    def generate_message_id():
-        # override existing non-deterministic method
-        return 'message-id'
-
-    def get_headers(self):
-        # override existing method that calls external service
-        return {'custom_header_one': 'value'}
-
     def mock_response(self, *, status_code, data=b''):
         # test helper method
         self.connection._sock = self.create_socket(

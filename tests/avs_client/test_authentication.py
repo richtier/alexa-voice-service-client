@@ -84,12 +84,12 @@ def test_prefetch_api_token(mock_retrieve_api_token):
 
 
 # AlexaVoiceServiceTokenAuthenticator
-def test_get_authentication_headers(token_retrieve_200):
+def test_get_headers(token_retrieve_200):
     authenticator = AlexaVoiceServiceTokenAuthenticator(
         client_id='debug', secret='debug', refresh_token='debug'
     )
 
-    headers = authenticator.get_authentication_headers()
+    headers = authenticator.get_headers()
 
     assert headers == {'Authorization': 'Bearer 123'}
 

@@ -28,7 +28,7 @@ def client():
         secret='test_secret',
         refresh_token='test_refresh_token',
     )
-    client.ping_manager.update_ping_deadline = MagicMock()
+    client.ping_manager.update_ping_deadline = MagicMock()  # context manager
     return client
 
 
