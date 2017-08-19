@@ -8,6 +8,8 @@ pip install git+https://github.com/richtier/alexa-browser-client.git@0.2.0#egg=a
 
 ## Usage ##
 
+
+### File audio ###
 ```py
 from avs_client import AlexaVoiceServiceClient
 
@@ -25,6 +27,51 @@ with open('./output.wav', 'wb') as f:
 ```
 
 Now listen to `output.wave` and Alexa should tell you the time.
+
+### Microphone audio ###
+```py
+from io import BytesIO
+
+import pyaudio
+
+from avs_client import AlexaVoiceServiceClient
+
+
+buffer = BytesIO()
+
+def callback(in_data, frame_count, time_info, status):
+    buffer.write(in_data)
+    return (in_data, pyaudio.paContinue)
+p = pyaudio.PyAudio()
+stream = p.open(
+    format=pyaudio.paInt16,
+    channels=1,
+    rate=16000,
+    input=True,
+    stream_callback=callback,
+)
+
+
+alexa_client = AlexaVoiceServiceClient(
+    client_id='my-client-id',
+    secret='my-secret',
+    refresh_token='my-refresh-token',
+)
+
+
+try:
+    stream.start_stream()
+    print('listening. Press CTRL + C to exit.')
+    alexa_client.connect()
+    alexa_response_audio = alexa_client.send_audio_file(buffer)
+    if alexa_response_audio:
+        with open('./output.wav', 'wb') as f:
+            f.write(alexa_response_audio)
+finally:
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+```
 
 ## Authentication ##
 
