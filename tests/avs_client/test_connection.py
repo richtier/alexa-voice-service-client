@@ -41,12 +41,16 @@ def audio_file():
     return BytesIO(b'things')
 
 
-def test_connection(manager):
+def test_create_connection(manager):
+    manager.create_connection()
+
     assert manager.connection.host == 'avs-alexa-eu.amazon.com'
     assert manager.connection.secure is True
 
 
 def test_establish_downstream_conncetion(manager, authentication_headers):
+    manager.create_connection()
+
     manager.establish_downchannel_stream(
         authentication_headers=authentication_headers
     )
@@ -65,7 +69,9 @@ def test_establish_downstream_conncetion(manager, authentication_headers):
 def test_synchronise_device_state(
     manager, authentication_headers, device_state
 ):
+    manager.create_connection()
     manager.mock_response(status_code=204)
+
     manager.synchronise_device_state(
         authentication_headers=authentication_headers,
         device_state=device_state,
@@ -109,6 +115,7 @@ def test_synchronise_device_state(
 def test_send_audio_file(
     manager, audio_file, device_state, authentication_headers
 ):
+    manager.create_connection()
     manager.mock_response(status_code=200)
 
     with patch.object(manager, 'parse_response'):  # test request only
@@ -166,6 +173,7 @@ def test_send_audio_file(
 def test_send_audio_204_response(
     manager, audio_file, authentication_headers, device_state
 ):
+    manager.create_connection()
     manager.mock_response(status_code=204)
 
     response = manager.send_audio_file(
@@ -183,6 +191,7 @@ def test_send_audio_204_response(
 def test_send_audio_non_200_response(
     status, audio_file, manager, device_state, authentication_headers
 ):
+    manager.create_connection()
     manager.mock_response(status_code=status)
 
     with pytest.raises(HTTPError):
@@ -193,16 +202,24 @@ def test_send_audio_non_200_response(
         )
 
 
-def test_ping(manager):
-    # TODO: confirm ping responds with 200
-    manager.mock_response(status_code=200)
+def test_ping(manager, authentication_headers):
+    manager.create_connection()
+    manager.mock_response(status_code=204)
 
-    manager.ping()
-
-    # first part is the frame header (generated in frame serialization)
-    assert manager.connection._sock.queue[0] == (
-        b'\x00\x00\x08\x06\x00\x00\x00\x00\x00********'
+    manager.ping(
+        authentication_headers=authentication_headers
     )
+
+    headers = dict(list(manager.connection.recent_stream.headers.items()))
+
+    assert headers == {
+        b':scheme': b'https',
+        b':method': b'GET',
+        b':path': b'/ping',
+        b':authority': b'avs-alexa-eu.amazon.com',
+        b'auth': b'value',
+    }
+
 
 
 

@@ -1,23 +1,24 @@
 from io import BytesIO
+import functools
 from unittest.mock import call, patch, Mock, MagicMock
 
 import pytest
 
-from avs_client.avs_client.client import AlexaVoiceServiceClient
+from avs_client.avs_client import client, connection
 
 
-class TestAlexaVoiceServiceClient(AlexaVoiceServiceClient):
+class TestAlexaVoiceServiceClient(client.AlexaVoiceServiceClient):
     authentication_manager_class = Mock(return_value=Mock(
-        spec_set=AlexaVoiceServiceClient.authentication_manager_class
+        spec_set=client.AlexaVoiceServiceClient.authentication_manager_class
     ))
     device_manager_class = Mock(return_value=Mock(
-        spec_set=AlexaVoiceServiceClient.device_manager_class
+        spec_set=client.AlexaVoiceServiceClient.device_manager_class
     ))
     connection_manager_class = Mock(return_value=Mock(
-        spec_set=AlexaVoiceServiceClient.connection_manager_class
+        spec_set=client.AlexaVoiceServiceClient.connection_manager_class
     ))
     ping_manager_class = Mock(return_value=Mock(
-        spec_set=AlexaVoiceServiceClient.ping_manager_class,
+        spec_set=client.AlexaVoiceServiceClient.ping_manager_class,
     ))
 
 
@@ -28,6 +29,11 @@ def client():
         secret='test_secret',
         refresh_token='test_refresh_token',
     )
+    # reset call counts.
+    client.authentication_manager.reset_mock()
+    client.device_manager.reset_mock()
+    client.connection_manager.reset_mock()
+    client.ping_manager.reset_mock()
     client.ping_manager.update_ping_deadline = MagicMock()  # context manager
     return client
 
@@ -98,7 +104,46 @@ def test_conditional_ping_should_not_ping(client):
 
 def test_conditional_ping_should_ping(client):
     client.ping_manager.should_ping.return_value = True
+
     client.conditional_ping()
 
     assert client.connection_manager.ping.call_count == 1
     assert client.ping_manager.update_ping_deadline.call_count == 1
+
+
+def test_conditional_ping_decorated(client):
+    assert client.conditional_ping.__wrapped__.__name__ == 'conditional_ping'
+
+
+def test_conditional_ping_single_reset_retry(client):
+    client.connect = Mock()
+
+    side_effects = [
+        connection.StreamResetError(),
+        Mock(status=204),
+    ]
+
+    client.ping_manager.should_ping.return_value = True
+    client.connection_manager.ping.side_effect = side_effects
+
+    actual = client.conditional_ping()
+
+    assert actual == side_effects[-1]
+    assert client.connect.call_count == 1
+    assert client.ping_manager.update_ping_deadline.call_count == 2
+    assert client.connection_manager.ping.call_count == 2
+
+
+def test_conditional_ping_multiple_reset_not_retry(client):
+    client.connect = Mock()
+
+    side_effects = [
+        connection.StreamResetError(),
+        connection.StreamResetError(),
+    ]
+
+    client.ping_manager.should_ping.return_value = True
+    client.connection_manager.ping.side_effect = side_effects
+
+    with pytest.raises(connection.StreamResetError):
+        actual = client.conditional_ping()

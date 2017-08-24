@@ -2,19 +2,21 @@ import json
 import http
 import typing
 import uuid
+import contextlib
 
-from avs_client.avs_client import device, ping
+from avs_client.avs_client import device, helpers, ping
 
 from requests_toolbelt import MultipartDecoder, MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
+from hyper.http20.exceptions import StreamResetError
 
 
 class ConnectionManager:
     host = 'avs-alexa-eu.amazon.com'
     connection = None
 
-    def __init__(self):
+    def create_connection(self):
         self.connection = HTTP20Connection(host=self.host, secure=True)
 
     def establish_downchannel_stream(self, authentication_headers):
@@ -133,8 +135,13 @@ class ConnectionManager:
         response = self.connection.get_response(stream_id)
         return self.parse_response(response)
 
-    def ping(self):
-        self.connection.ping(b'********')
+    def ping(self, authentication_headers):
+        stream_id = self.connection.request(
+            'GET',
+            '/ping',
+            headers=authentication_headers,
+        )
+        return self.connection.get_response(stream_id)
 
     @staticmethod
     def parse_response(response) -> typing.Union[bytes, None]:

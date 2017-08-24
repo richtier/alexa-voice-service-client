@@ -3,7 +3,7 @@ Python Client for Alexa Voice Service (AVS)
 
 ## Installation ##
 ```sh
-pip install git+https://github.com/richtier/alexa-browser-client.git@0.2.0#egg=alexa_browser_client
+pip install git+https://github.com/richtier/alexa-browser-client.git@0.3.0#egg=alexa_browser_client
 ```
 
 ## Usage ##
