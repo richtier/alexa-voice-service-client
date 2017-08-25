@@ -50,19 +50,19 @@ class TestConnectionMixin:
 
     """
 
-    def mock_response(self, *, status_code, data=b''):
+    def mock_response(self, *, status_code, data=b'', headers=[]):
         # test helper method
         self.connection._sock = self.create_socket(
-            status_code=status_code, data=data,
+            status_code=status_code, data=data, headers=headers,
         )
 
     @staticmethod
-    def create_socket(status_code, data):
+    def create_socket(status_code, data, headers):
         # test helper method
         encoder = Encoder()
         h1 = HeadersFrame(1)
         h1.data = encoder.encode(
-            [(':status', status_code), ('content-length', len(data))]
+            [(':status', status_code), ('content-length', len(data))] + headers
         )
         h1.flags |= set(['END_HEADERS'])
 

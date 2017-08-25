@@ -7,6 +7,7 @@ from requests.exceptions import HTTPError
 
 from avs_client.avs_client import connection
 from tests.avs_client.helpers import parse_multipart, TestConnectionMixin
+from tests.avs_client import fixtures
 
 
 class TestConnectionManager(TestConnectionMixin, connection.ConnectionManager):
@@ -170,6 +171,37 @@ def test_send_audio_file(
     assert parsed.parts[1].content == b'things'
 
 
+def test_parse_response_200(
+    manager, audio_file, device_state, authentication_headers
+):
+    manager.create_connection()
+
+    manager.mock_response(
+        data=fixtures.audio_response_multipart,
+        headers = [
+            (b'access-control-allow-origin', b'*'),
+            (b'x-amzn-requestid', b'06aaf3fffec6be28-00003161-00006c28'),
+            (
+                b'content-type',
+                (
+                    b'multipart/related;'
+                    b'boundary=22b41228-f803-447b-9cde-f99d0a1652b1;'
+                    b'start=metadata.1503696654430;type="application/json"'
+                )
+            )
+        ],
+        status_code=200
+    )
+
+    audio_data = manager.send_audio_file(
+        audio_file=audio_file,
+        device_state=device_state,
+        authentication_headers=authentication_headers,
+    )
+
+    assert audio_data == fixtures.audio_response_data
+
+
 def test_send_audio_204_response(
     manager, audio_file, authentication_headers, device_state
 ):
@@ -219,11 +251,3 @@ def test_ping(manager, authentication_headers):
         b':authority': b'avs-alexa-eu.amazon.com',
         b'auth': b'value',
     }
-
-
-
-
-@pytest.mark.skip()
-def test_parse_response_200():
-    # todo: get valid alexa response and mock the response
-    pass

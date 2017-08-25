@@ -3,7 +3,7 @@ Python Client for Alexa Voice Service (AVS)
 
 ## Installation ##
 ```sh
-pip install git+https://github.com/richtier/alexa-browser-client.git@0.3.0#egg=alexa_browser_client
+pip install git+https://github.com/richtier/alexa-browser-client.git@0.4.0#egg=alexa_browser_client
 ```
 
 ## Usage ##
@@ -20,7 +20,7 @@ alexa_client = AlexaVoiceServiceClient(
     refresh_token='my-refresh-token',
 )
 alexa_client.connect()  # authenticate and other handshaking steps
-with open('./tests/resource/alexa_what_time_is_it.wav', 'rb') as f:
+with open('./tests/resources/alexa_what_time_is_it.wav', 'rb') as f:
     alexa_response_audio = alexa_client.send_audio_file(f)
 with open('./output.wav', 'wb') as f:
     f.write(alexa_response_audio)

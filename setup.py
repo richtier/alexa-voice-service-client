@@ -13,7 +13,7 @@ def get_requirements():
 
 setup(
     name='avs_client',
-    version='0.3.0',
+    version='0.4.0',
     url='https://github.com/richtier/alexa-voice-service-client',
     license='MIT',
     author='Richard Tier',

@@ -88,8 +88,9 @@ def test_handle_callback_amazon_request(amazon_request_200, requests_mocker):
 
 def test_handle_callback_200_response(amazon_request_200):
     response = requests.get('http://localhost:9000/callback/?code=my-code')
+
     assert response.status_code == 200
-    assert response.json() == {'refresh_token': 'my-refresh-token'}
+    assert response.content == b'refresh_token: my-refresh-token'
 
 
 def test_handle_callback_non_200(amazon_request_401):
