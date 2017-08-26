@@ -1,6 +1,10 @@
+from setuptools import setup, find_packages
+
 import pip.download
 from pip.req import parse_requirements
-from setuptools import setup, find_packages
+import pypandoc
+
+
 
 
 def get_requirements():
@@ -13,13 +17,14 @@ def get_requirements():
 
 setup(
     name='avs_client',
-    version='0.4.0',
+    version='0.4.2',
+    packages=find_packages(exclude=["tests.*", "tests"]),
     url='https://github.com/richtier/alexa-voice-service-client',
     license='MIT',
     author='Richard Tier',
+    author_email='rikatee@gmail.com',
     description='Python Client for Alexa Voice Service (AVS)',
-    packages=find_packages(),
-    long_description=open('README.md').read(),
+    long_description=pypandoc.convert('README.md', 'rst'),
     include_package_data=True,
     install_requires=get_requirements(),
     classifiers=[
