@@ -1,5 +1,3 @@
-from collections import OrderedDict
-import os
 import re
 import threading
 import urllib
@@ -26,7 +24,7 @@ def background_server(server):
     def thread_function():
         server.serve_forever()
 
-    thread = threading.Thread(target=thread_function) 
+    thread = threading.Thread(target=thread_function)
     thread.start()
     try:
         yield

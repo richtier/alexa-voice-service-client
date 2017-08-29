@@ -1,9 +1,14 @@
-# alexa-voice-service-client #
-Python Client for Alexa Voice Service (AVS)
+# Alexa Voice Service Client #
+
+[![code-climate-image]][code-climate]
+
+**Python Client for Alexa Voice Service (AVS)**
+
+---
 
 ## Installation ##
 ```sh
-pip install git+https://github.com/richtier/alexa-browser-client.git@0.4.0#egg=alexa_browser_client
+pip install avs_client
 ```
 
 ## Usage ##
@@ -130,6 +135,18 @@ ping_thread.start()
 
 You will only need this if you intend to run the process for more than five minutes. [More information](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection).
 
+## Unit test ##
+
+To run the unit tests, call the following commands:
+
+```sh
+pip install -r requirements-dev.txt
+./scripts/tests.sh
+```
+
 ## Other projects ##
 
 This library is used by [alexa-browser-client](https://github.com/richtier/alexa-browser-client), which allows you to talk to Alexa from your browser.
+
+[code-climate-image]: https://codeclimate.com/github/richtier/alexa-voice-service-client/badges/gpa.svg
+[code-climate]: https://codeclimate.com/github/richtier/alexa-voice-service-client

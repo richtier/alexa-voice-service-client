@@ -1,39 +1,26 @@
 from io import BytesIO
-import functools
-from unittest.mock import call, patch, Mock, MagicMock
+from unittest.mock import call, Mock, MagicMock
 
+from hyper.http20.exceptions import StreamResetError
 import pytest
 
-from avs_client.avs_client import client, connection
-
-
-class TestAlexaVoiceServiceClient(client.AlexaVoiceServiceClient):
-    authentication_manager_class = Mock(return_value=Mock(
-        spec_set=client.AlexaVoiceServiceClient.authentication_manager_class
-    ))
-    device_manager_class = Mock(return_value=Mock(
-        spec_set=client.AlexaVoiceServiceClient.device_manager_class
-    ))
-    connection_manager_class = Mock(return_value=Mock(
-        spec_set=client.AlexaVoiceServiceClient.connection_manager_class
-    ))
-    ping_manager_class = Mock(return_value=Mock(
-        spec_set=client.AlexaVoiceServiceClient.ping_manager_class,
-    ))
+from avs_client.avs_client.client import AlexaVoiceServiceClient
 
 
 @pytest.fixture
 def client():
+    class TestAlexaVoiceServiceClient(AlexaVoiceServiceClient):
+        authentication_manager_class = Mock()
+        device_manager_class = Mock()
+        connection_manager_class = Mock()
+        ping_manager_class = Mock()
+
     client = TestAlexaVoiceServiceClient(
         client_id='test_client_id',
         secret='test_secret',
         refresh_token='test_refresh_token',
     )
-    # reset call counts.
-    client.authentication_manager.reset_mock()
-    client.device_manager.reset_mock()
-    client.connection_manager.reset_mock()
-    client.ping_manager.reset_mock()
+
     client.ping_manager.update_ping_deadline = MagicMock()  # context manager
     return client
 
@@ -51,7 +38,9 @@ def test_client_connect(client):
     client.connect()
 
     assert client.authentication_manager.prefetch_api_token.call_count == 1
-    assert client.connection_manager.establish_downchannel_stream.call_count == 1
+    assert (
+        client.connection_manager.establish_downchannel_stream.call_count == 1
+    )
     assert client.connection_manager.synchronise_device_state.call_count == 1
 
 
@@ -59,8 +48,9 @@ def test_client_establish_downchannel_stream(client):
     client.authentication_manager.get_headers.return_value = {'auth': 'value'}
 
     client.establish_downchannel_stream()
+    connection_manager = client.connection_manager
 
-    assert client.connection_manager.establish_downchannel_stream.call_args == call(
+    assert connection_manager.establish_downchannel_stream.call_args == call(
         authentication_headers={'auth': 'value'}
     )
 
@@ -70,8 +60,9 @@ def test_client_synchronise_device_state(client):
     client.device_manager.get_device_state.return_value = {'device': 'state'}
 
     client.synchronise_device_state()
+    connection_manager = client.connection_manager
 
-    assert client.connection_manager.synchronise_device_state.call_args == call(
+    assert connection_manager.synchronise_device_state.call_args == call(
         device_state={'device': 'state'},
         authentication_headers={'auth': 'value'},
     )
@@ -119,7 +110,7 @@ def test_conditional_ping_single_reset_retry(client):
     client.connect = Mock()
 
     side_effects = [
-        connection.StreamResetError(),
+        StreamResetError(),
         Mock(status=204),
     ]
 
@@ -138,12 +129,12 @@ def test_conditional_ping_multiple_reset_not_retry(client):
     client.connect = Mock()
 
     side_effects = [
-        connection.StreamResetError(),
-        connection.StreamResetError(),
+        StreamResetError(),
+        StreamResetError(),
     ]
 
     client.ping_manager.should_ping.return_value = True
     client.connection_manager.ping.side_effect = side_effects
 
-    with pytest.raises(connection.StreamResetError):
-        actual = client.conditional_ping()
+    with pytest.raises(StreamResetError):
+        client.conditional_ping()

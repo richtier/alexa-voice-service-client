@@ -2,14 +2,10 @@ import json
 import http
 import typing
 import uuid
-import contextlib
-
-from avs_client.avs_client import device, helpers, ping
 
 from requests_toolbelt import MultipartDecoder, MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
-from hyper.http20.exceptions import StreamResetError
 
 
 class ConnectionManager:
@@ -75,7 +71,9 @@ class ConnectionManager:
         response = self.connection.get_response(stream_id)
         assert response.status == http.client.NO_CONTENT
 
-    def send_audio_file(self, audio_file, device_state, authentication_headers) -> bytes:
+    def send_audio_file(
+        self, audio_file, device_state, authentication_headers
+    ) -> bytes:
         """
         Send audio to AVS
 
@@ -165,4 +163,3 @@ class ConnectionManager:
     @staticmethod
     def generate_message_id() -> str:
         return str(uuid.uuid4())
-

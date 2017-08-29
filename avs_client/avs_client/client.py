@@ -1,10 +1,14 @@
 from functools import wraps
 
+from hyper.http20.exceptions import StreamResetError
+
 from avs_client.avs_client import authentication, connection, device, ping
 
 
 class AlexaVoiceServiceClient:
-    authentication_manager_class = authentication.AlexaVoiceServiceTokenAuthenticator
+    authentication_manager_class = (
+        authentication.AlexaVoiceServiceTokenAuthenticator
+    )
     device_manager_class = device.DeviceManager
     connection_manager_class = connection.ConnectionManager
     ping_manager_class = ping.PingManager
@@ -27,7 +31,7 @@ class AlexaVoiceServiceClient:
         def wrapped(self, *args, **kwargs):
             try:
                 return f(self, *args, **kwargs)
-            except connection.StreamResetError:
+            except StreamResetError:
                 self.connect()
                 return f(self, *args, **kwargs)
         return wrapped

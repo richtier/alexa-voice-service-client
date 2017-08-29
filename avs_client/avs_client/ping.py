@@ -10,12 +10,13 @@ class PingManager:
     def update_ping_deadline(self):
         """
         Updates time when ping should be called.
-        
+
         The client must send a PING frame to AVS every five minutes when the
         connection is idle. Failure to do so will result in a closed
         connection.
-        
+
         """
+
         yield
         self.ping_deadline = datetime.utcnow() + self.delta
 

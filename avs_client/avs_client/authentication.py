@@ -22,10 +22,10 @@ class AlexaVoiceServiceTokenAuthenticator:
         value returned by the function will be remembered and returned by
         subsequent calls until the memo expires. This is because the access
         token lasts for one hour, then a new token needs to be requested.
-                
+
         Decorators:
             helpers.expiring_memo
-        
+
         Returns:
             str -- The access token for communicating with AVS
 

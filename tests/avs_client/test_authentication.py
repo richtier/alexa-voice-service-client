@@ -8,6 +8,7 @@ from avs_client.avs_client.authentication import (
     AlexaVoiceServiceTokenAuthenticator
 )
 
+
 @pytest.fixture
 def token_retrieve_200(requests_mocker):
     return requests_mocker.post(

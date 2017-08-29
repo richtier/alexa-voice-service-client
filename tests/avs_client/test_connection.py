@@ -178,7 +178,7 @@ def test_parse_response_200(
 
     manager.mock_response(
         data=fixtures.audio_response_multipart,
-        headers = [
+        headers=[
             (b'access-control-allow-origin', b'*'),
             (b'x-amzn-requestid', b'06aaf3fffec6be28-00003161-00006c28'),
             (

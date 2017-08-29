@@ -1,5 +1,3 @@
-import pytest
-
 from avs_client.refreshtoken import arg_parser
 
 

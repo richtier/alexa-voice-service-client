@@ -1,8 +1,9 @@
 from collections import OrderedDict
 import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import requests
+from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlencode, quote, parse_qsl, urlparse
+
+import requests
 
 
 class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
@@ -46,7 +47,7 @@ class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
 
     def handle_login(self):
         self.send_response(302)
-         # OrderedDict to facilitate testing
+        # OrderedDict to facilitate testing
         params = OrderedDict([
             ('client_id', self.client_id),
             ('scope', 'alexa:all'),

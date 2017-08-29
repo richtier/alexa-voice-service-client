@@ -11,7 +11,6 @@ def manager():
     return ping.PingManager()
 
 
-# ping_manager 
 @freeze_time(datetime(2012, 1, 14, 12, 0, 1))
 @pytest.mark.parametrize('ping_deadline,expected', [
     [None, False],

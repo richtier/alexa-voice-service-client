@@ -1,6 +1,6 @@
-import os
-
-import arg_parser, handlers, http_server
+import arg_parser
+import handlers
+import http_server
 
 
 def serve_forever(address, port, client_id, client_secret, device_type_id):
@@ -14,7 +14,7 @@ def serve_forever(address, port, client_id, client_secret, device_type_id):
     )
     print('running server on http://{}:{}'.format(*server_address))
     server.serve_forever()
- 
+
 
 if __name__ == '__main__':
     args = arg_parser.parser.parse_args()
