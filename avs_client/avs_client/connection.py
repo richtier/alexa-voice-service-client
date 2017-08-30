@@ -13,7 +13,9 @@ class ConnectionManager:
     connection = None
 
     def create_connection(self):
-        self.connection = HTTP20Connection(host=self.host, secure=True)
+        self.connection = HTTP20Connection(
+            host=self.host, secure=True, force_proto='h2',
+        )
 
     def establish_downchannel_stream(self, authentication_headers):
         self.connection.request(
