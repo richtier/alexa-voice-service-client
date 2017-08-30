@@ -1,6 +1,7 @@
 # Alexa Voice Service Client #
 
 [![code-climate-image]][code-climate]
+[![circle-ci-image]][circle-ci]
 
 **Python Client for Alexa Voice Service (AVS)**
 
@@ -12,7 +13,6 @@ pip install avs_client
 ```
 
 ## Usage ##
-
 
 ### File audio ###
 ```py
@@ -150,3 +150,6 @@ This library is used by [alexa-browser-client](https://github.com/richtier/alexa
 
 [code-climate-image]: https://codeclimate.com/github/richtier/alexa-voice-service-client/badges/gpa.svg
 [code-climate]: https://codeclimate.com/github/richtier/alexa-voice-service-client
+
+[circle-ci-image]: https://circleci.com/gh/richtier/alexa-voice-service-client/tree/master.svg?style=svg
+[circle-ci]: https://circleci.com/gh/richtier/alexa-voice-service-client/tree/master
