@@ -2,6 +2,7 @@
 
 [![code-climate-image]][code-climate]
 [![circle-ci-image]][circle-ci]
+[![codecov-image]][codecov]
 
 **Python Client for Alexa Voice Service (AVS)**
 
@@ -153,3 +154,6 @@ This library is used by [alexa-browser-client](https://github.com/richtier/alexa
 
 [circle-ci-image]: https://circleci.com/gh/richtier/alexa-voice-service-client/tree/master.svg?style=svg
 [circle-ci]: https://circleci.com/gh/richtier/alexa-voice-service-client/tree/master
+
+[codecov-image]: https://codecov.io/gh/richtier/alexa-voice-service-client/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/richtier/alexa-voice-service-client

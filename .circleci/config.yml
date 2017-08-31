@@ -21,7 +21,6 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "requirements.txt" }}
@@ -40,12 +39,17 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
         
-      # run tests!
       - run:
           name: run tests
           command: |
             . venv/bin/activate
             /bin/bash ./scripts/test.sh
+
+      - run:
+          name: report coverage
+          command: |
+            . venv/bin/activate
+            codecov
 
       - store_artifacts:
           path: test-reports

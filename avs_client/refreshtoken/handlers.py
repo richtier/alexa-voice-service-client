@@ -14,13 +14,11 @@ class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
     device_type_id = None
     client_secret = None
 
-    def __init__(
-        self, client_id, device_type_id, client_secret, *args, **kwargs
-    ):
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.device_type_id = device_type_id
-        super().__init__(*args, **kwargs)
+    def __init__(self, request, client_address, server):
+        self.client_id = server.client_id
+        self.client_secret = server.client_secret
+        self.device_type_id = server.device_type_id
+        super().__init__(request, client_address, server)
 
     @property
     def callback_url(self):

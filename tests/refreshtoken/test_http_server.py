@@ -16,15 +16,12 @@ def test_http_server_passes_args(mock__init__):
     )
 
     request = Mock()
-    client_address = Mock()
+    client_address = ('localhost', '9000')
     server.finish_request(request=request, client_address=client_address)
 
     assert mock__init__.call_count == 1
-    assert mock__init__.call_args == call(
-        request=request,
-        client_address=client_address,
-        server=server,
-        client_id='client-id-here',
-        client_secret='client-secret-here',
-        device_type_id='device-type-id-here',
-    )
+    assert mock__init__.call_args == call(request, client_address, server)
+
+    assert server.client_id == 'client-id-here'
+    assert server.client_secret == 'client-secret-here'
+    assert server.device_type_id == 'device-type-id-here'
