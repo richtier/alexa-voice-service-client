@@ -71,7 +71,7 @@ class ConnectionManager:
             headers=headers,
         )
         response = self.connection.get_response(stream_id)
-        assert response.status == http.client.NO_CONTENT
+        assert response.status in [http.client.NO_CONTENT, http.client.OK]
 
     def send_audio_file(
         self, audio_file, device_state, authentication_headers
@@ -145,9 +145,9 @@ class ConnectionManager:
 
     @staticmethod
     def parse_response(response) -> typing.Union[bytes, None]:
-        if response.status == 204:
+        if response.status == http.client.NO_CONTENT:
             return None
-        if not response.status == 200:
+        if not response.status == http.client.OK:
             raise HTTPError(response=response)
 
         parsed = MultipartDecoder(

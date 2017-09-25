@@ -67,11 +67,12 @@ def test_establish_downstream_conncetion(manager, authentication_headers):
     }
 
 
+@pytest.mark.parametrize("status", [200, 204])
 def test_synchronise_device_state(
-    manager, authentication_headers, device_state
+    status, manager, authentication_headers, device_state
 ):
     manager.create_connection()
-    manager.mock_response(status_code=204)
+    manager.mock_response(status_code=status)
 
     manager.synchronise_device_state(
         authentication_headers=authentication_headers,
