@@ -71,6 +71,11 @@ def test_routes_to_login(background_server):
     )
 
 
+def test_routes_to_404(background_server):
+    response = requests.get('http://localhost:9000/a', allow_redirects=False)
+    assert response.status_code == 404
+
+
 def test_handle_callback_amazon_request(amazon_request_200, requests_mocker):
     requests.get('http://localhost:9000/callback/?code=my-code')
 

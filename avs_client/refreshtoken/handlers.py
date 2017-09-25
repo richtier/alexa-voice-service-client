@@ -38,7 +38,7 @@ class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
         # remove querystring
         path = self.path.split('?')[0]
         if path not in routes:
-            self.send_response(404, message='Not Found')
+            self.send_response(404)
             self.end_headers()
             return
         return routes[path]()
