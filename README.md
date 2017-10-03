@@ -137,6 +137,24 @@ ping_thread.start()
 
 You will only need this if you intend to run the process for more than five minutes. [More information](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection).
 
+## Passing extra context ##
+
+Passing extra context to AVS is useful if you're running a custom AVS skill and need some data passed from the client to the AVS adapter, e.g, a smart home skill that controls the lights in the current room must know from which room the audio command came from:
+
+```
+alexa_response_audio = alexa_client.send_audio_file(f, context={
+    'header': {
+        'namespace': 'MyCustomSkill',
+        'name': 'RoomState'
+    },
+    'payload': {
+        'name': 'kitchen'
+    }
+})
+
+```
+
+
 ## Unit test ##
 
 To run the unit tests, call the following commands:

@@ -1,7 +1,8 @@
 class DeviceManager:
-    def get_device_state(self):
+
+    def build_device_state(self, context=None):
         # https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/reference/context
-        return [
+        state = [
             {
                 'header': {
                     'namespace': 'AudioPlayer',
@@ -33,5 +34,8 @@ class DeviceManager:
                     'offsetInMilliseconds': 0,
                     'playerActivity': 'FINISHED'
                 }
-            },
+            }
         ]
+        if context:
+            state.append(context)
+        return state

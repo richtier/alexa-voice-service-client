@@ -76,7 +76,7 @@ def test_synchronise_device_state(
 
     manager.synchronise_device_state(
         authentication_headers=authentication_headers,
-        device_state=device_state,
+        context=device_state,
     )
 
     headers = dict(list(manager.connection.recent_stream.headers.items()))
@@ -122,7 +122,7 @@ def test_send_audio_file(
 
     with patch.object(manager, 'parse_response'):  # test request only
         manager.send_audio_file(
-            device_state=device_state,
+            context=device_state,
             authentication_headers=authentication_headers,
             audio_file=audio_file,
         )
@@ -196,7 +196,7 @@ def test_parse_response_200(
 
     audio_data = manager.send_audio_file(
         audio_file=audio_file,
-        device_state=device_state,
+        context=device_state,
         authentication_headers=authentication_headers,
     )
 
@@ -210,7 +210,7 @@ def test_send_audio_204_response(
     manager.mock_response(status_code=204)
 
     response = manager.send_audio_file(
-        device_state=device_state,
+        context=device_state,
         authentication_headers=authentication_headers,
         audio_file=audio_file,
     )
@@ -229,7 +229,7 @@ def test_send_audio_non_200_response(
 
     with pytest.raises(HTTPError):
         manager.send_audio_file(
-            device_state=device_state,
+            context=device_state,
             authentication_headers=authentication_headers,
             audio_file=audio_file,
         )

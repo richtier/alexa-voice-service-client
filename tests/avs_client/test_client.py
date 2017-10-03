@@ -57,13 +57,13 @@ def test_client_establish_downchannel_stream(client):
 
 def test_client_synchronise_device_state(client):
     client.authentication_manager.get_headers.return_value = {'auth': 'value'}
-    client.device_manager.get_device_state.return_value = {'device': 'state'}
+    client.device_manager.build_device_state.return_value = {'device': 'state'}
 
     client.synchronise_device_state()
     connection_manager = client.connection_manager
 
     assert connection_manager.synchronise_device_state.call_args == call(
-        device_state={'device': 'state'},
+        context={'device': 'state'},
         authentication_headers={'auth': 'value'},
     )
     assert client.ping_manager.update_ping_deadline.call_count == 1
@@ -71,14 +71,14 @@ def test_client_synchronise_device_state(client):
 
 def test_client_send_audio_file(client):
     client.authentication_manager.get_headers.return_value = {'auth': 'value'}
-    client.device_manager.get_device_state.return_value = {'device': 'state'}
+    client.device_manager.build_device_state.return_value = {'device': 'state'}
 
     audio_file = BytesIO(b'things')
     client.send_audio_file(audio_file)
 
     assert client.connection_manager.send_audio_file.call_args == call(
         audio_file=audio_file,
-        device_state={'device': 'state'},
+        context={'device': 'state'},
         authentication_headers={'auth': 'value'},
     )
     assert client.ping_manager.update_ping_deadline.call_count == 1
