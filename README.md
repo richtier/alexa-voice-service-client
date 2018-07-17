@@ -105,7 +105,7 @@ To enable this first go [here](https://developer.amazon.com/avs/home.html#/avs/h
 Then run:
 
 ```sh
-python ./serve.py \
+python ./avs_client/refreshtoken/serve.py \
     --device-type-id=enter-device-type-id-here \
     --client-id=enter-client-id-here \
     --client-secret=enter-client-secret-here

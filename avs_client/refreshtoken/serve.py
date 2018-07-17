@@ -1,4 +1,10 @@
-from avs_client.refreshtoken import arg_parser, http_server, handlers
+import os
+import sys
+
+# solve import error when calling this script from project root.
+sys.path.append(os.getcwd())
+
+from avs_client.refreshtoken import arg_parser, http_server, handlers  # NOQA
 
 
 def serve_forever(address, port, client_id, client_secret, device_type_id):
