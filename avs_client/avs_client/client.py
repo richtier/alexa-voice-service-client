@@ -52,15 +52,15 @@ class AlexaVoiceServiceClient:
             headers = self.authentication_manager.get_headers()
             return self.connection_manager.synchronise_device_state(
                 authentication_headers=headers,
-                context=self.device_manager.build_device_state(),
+                device_state=self.device_manager.get_device_state(),
             )
 
-    def send_audio_file(self, audio_file, context=None) -> bytes:
+    def send_audio_file(self, audio_file) -> bytes:
         with self.ping_manager.update_ping_deadline():
             headers = self.authentication_manager.get_headers()
             return self.connection_manager.send_audio_file(
                 authentication_headers=headers,
-                context=self.device_manager.build_device_state(context),
+                device_state=self.device_manager.get_device_state(),
                 audio_file=audio_file,
             )
 

@@ -24,7 +24,7 @@ class ConnectionManager:
             headers=authentication_headers
         )
 
-    def synchronise_device_state(self, context, authentication_headers):
+    def synchronise_device_state(self, device_state, authentication_headers):
         """
         Synchronizing the component states with AVS
 
@@ -37,7 +37,7 @@ class ConnectionManager:
         """
 
         payload = {
-            'context': context,
+            'context': device_state,
             'event': {
                 'header': {
                     'namespace': 'System',
@@ -74,7 +74,7 @@ class ConnectionManager:
         assert response.status in [http.client.NO_CONTENT, http.client.OK]
 
     def send_audio_file(
-        self, audio_file, context, authentication_headers
+        self, audio_file, device_state, authentication_headers
     ) -> bytes:
         """
         Send audio to AVS
@@ -87,7 +87,7 @@ class ConnectionManager:
         """
 
         payload = {
-            'context': context,
+            'context': device_state,
             'event': {
                 'header': {
                     'namespace': 'SpeechRecognizer',
