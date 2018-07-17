@@ -14,7 +14,7 @@ def get_requirements():
 
 setup(
     name='avs_client',
-    version='0.6.0',
+    version='0.5.3',
     packages=find_packages(exclude=["tests.*", "tests"]),
     url='https://github.com/richtier/alexa-voice-service-client',
     license='MIT',
