@@ -5,7 +5,7 @@ import urllib
 import pytest
 import requests
 
-from avs_client.refreshtoken import http_server, handlers
+from avs_client.refreshtoken import handlers, helpers, http_server
 
 
 @pytest.fixture(scope='session')
@@ -35,7 +35,7 @@ def background_server(server):
 @pytest.fixture
 def amazon_request_200(requests_mocker):
     return requests_mocker.post(
-        url=handlers.AmazonAlexaServiceLoginHandler.oauth2_token_url,
+        url=helpers.AmazonOauth2RequestManager.authorization_grant_url,
         status_code=200,
         json={
             'refresh_token': 'my-refresh-token'
@@ -46,7 +46,7 @@ def amazon_request_200(requests_mocker):
 @pytest.fixture
 def amazon_request_401(requests_mocker):
     return requests_mocker.post(
-        url=handlers.AmazonAlexaServiceLoginHandler.oauth2_token_url,
+        url=helpers.AmazonOauth2RequestManager.authorization_grant_url,
         status_code=401,
         text='oops!'
     )
@@ -76,7 +76,9 @@ def test_routes_to_404(background_server):
     assert response.status_code == 404
 
 
-def test_handle_callback_amazon_request(amazon_request_200, requests_mocker):
+def test_handle_callback_amazon_request(
+    background_server, amazon_request_200, requests_mocker
+):
     requests.get('http://localhost:9000/callback/?code=my-code')
 
     amazon_request = requests_mocker.request_history[1]
@@ -89,14 +91,14 @@ def test_handle_callback_amazon_request(amazon_request_200, requests_mocker):
     }
 
 
-def test_handle_callback_200_response(amazon_request_200):
+def test_handle_callback_200_response(background_server, amazon_request_200):
     response = requests.get('http://localhost:9000/callback/?code=my-code')
 
     assert response.status_code == 200
     assert response.content == b'refresh_token: my-refresh-token'
 
 
-def test_handle_callback_non_200(amazon_request_401):
+def test_handle_callback_non_200(background_server, amazon_request_401):
     response = requests.get('http://localhost:9000/callback/?code=my-code')
     assert response.status_code == 401
     assert response.content == b'oops!'
