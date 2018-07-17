@@ -1,6 +1,4 @@
-import arg_parser
-import handlers
-import http_server
+from avs_client.refreshtoken import arg_parser, http_server, handlers
 
 
 def serve_forever(address, port, client_id, client_secret, device_type_id):

@@ -3,7 +3,6 @@
 [![code-climate-image]][code-climate]
 [![circle-ci-image]][circle-ci]
 [![codecov-image]][codecov]
-[![gemnasium-image]][gemnasium]
 
 **Python Client for Alexa Voice Service (AVS)**
 
@@ -106,7 +105,7 @@ To enable this first go [here](https://developer.amazon.com/avs/home.html#/avs/h
 Then run:
 
 ```sh
-python ./avs_client/refreshtoken/serve.py \
+python ./serve.py \
     --device-type-id=enter-device-type-id-here \
     --client-id=enter-client-id-here \
     --client-secret=enter-client-secret-here
@@ -159,5 +158,3 @@ This library is used by [alexa-browser-client](https://github.com/richtier/alexa
 [codecov-image]: https://codecov.io/gh/richtier/alexa-voice-service-client/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/richtier/alexa-voice-service-client
 
-[gemnasium-image]: https://gemnasium.com/badges/github.com/richtier/alexa-voice-service-client.svg
-[gemnasium]: https://gemnasium.com/github.com/richtier/alexa-voice-service-client

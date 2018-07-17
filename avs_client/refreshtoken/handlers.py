@@ -1,23 +1,17 @@
-from collections import OrderedDict
-import json
 from http.server import BaseHTTPRequestHandler
-from urllib.parse import urlencode, quote, parse_qsl, urlparse
+from urllib.parse import parse_qsl, urlparse
 
 import requests
+from avs_client.refreshtoken import helpers
 
 
 class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
-    oauth2_url = 'https://www.amazon.com/ap/oa'
-    oauth2_token_url = 'https://api.amazon.com/auth/o2/token'
-
-    client_id = None
-    device_type_id = None
-    client_secret = None
 
     def __init__(self, request, client_address, server):
-        self.client_id = server.client_id
-        self.client_secret = server.client_secret
-        self.device_type_id = server.device_type_id
+        self.oauth2_manager = helpers.AmazonOauth2RequestManager(
+            client_id=server.client_id,
+            client_secret=server.client_secret,
+        )
         super().__init__(request, client_address, server)
 
     @property
@@ -44,39 +38,24 @@ class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
         return routes[path]()
 
     def handle_login(self):
-        self.send_response(302)
-        # OrderedDict to facilitate testing
-        params = OrderedDict([
-            ('client_id', self.client_id),
-            ('scope', 'alexa:all'),
-            ('scope_data', json.dumps({
-                'alexa:all': OrderedDict([
-                    ('productID', self.device_type_id),
-                    ('productInstanceAttributes', {
-                        'deviceSerialNumber': '001'
-                    })
-                ])
-            })),
-            ('response_type', 'code'),
-            ('redirect_uri', self.callback_url)
-        ])
-
-        self.send_header(
-            'Location', self.oauth2_url + '?' + urlencode(params)
+        url = self.oauth2_manager.get_authorization_request_url(
+            device_type_id=self.server.device_type_id,
+            callback_url=self.callback_url,
         )
+        self.send_response(302)
+        self.send_header('Location', url)
         self.end_headers()
         return
 
     def handle_callback(self):
         params = dict(parse_qsl(urlparse(self.path).query))
-        payload = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'code': quote(params['code']),
-            'grant_type': 'authorization_code',
-            'redirect_uri': self.callback_url,
-        }
-        response = requests.post(self.oauth2_token_url, json=payload)
+        payload = self.oauth2_manager.get_authorizarization_grant_params(
+            code=params['code'],
+            callback_url=self.callback_url,
+        )
+        response = requests.post(
+            self.oauth2_manager.authorization_grant_url, json=payload
+        )
         if response.status_code != 200:
             self.send_response(response.status_code)
             self.send_header('Content-type', 'text/html')
