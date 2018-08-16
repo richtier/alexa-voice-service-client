@@ -16,6 +16,7 @@ def server():
         client_id='client-id-here',
         client_secret='client-secret-here',
         device_type_id='device-type-id-here',
+        callback_url='http://localhost:9000/callback/',
     )
 
 
