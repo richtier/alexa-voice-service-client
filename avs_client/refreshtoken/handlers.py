@@ -8,21 +8,12 @@ from avs_client.refreshtoken import helpers
 class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
 
     def __init__(self, request, client_address, server):
+        self.callback_url = server.callback_url
         self.oauth2_manager = helpers.AmazonOauth2RequestManager(
             client_id=server.client_id,
             client_secret=server.client_secret,
         )
         super().__init__(request, client_address, server)
-
-    @property
-    def callback_url(self):
-        # note: ensure the redirect url is whitelisted in the
-        # 'Allowed Return URLs' section under 'Web Settings' for your
-        # Security Profile on Amazon Developer Portal.
-        return 'http://{address}:{port}/callback/'.format(
-            address=self.server.server_name,
-            port=self.server.server_port,
-        )
 
     def do_GET(self):
         routes = {

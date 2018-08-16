@@ -13,6 +13,7 @@ def test_http_server_passes_args(mock__init__):
         client_id='client-id-here',
         client_secret='client-secret-here',
         device_type_id='device-type-id-here',
+        callback_url='http://localhost:9000/callback/',
     )
 
     request = Mock()
@@ -25,3 +26,4 @@ def test_http_server_passes_args(mock__init__):
     assert server.client_id == 'client-id-here'
     assert server.client_secret == 'client-secret-here'
     assert server.device_type_id == 'device-type-id-here'
+    assert server.callback_url == 'http://localhost:9000/callback/'
