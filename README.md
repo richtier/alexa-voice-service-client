@@ -89,7 +89,7 @@ The client requires your `client_id`, `secret` and `refresh_token`:
 | ------------- | ------------------------------------- |
 | `client_id`     | Retrieve by clicking on the your product listed [here](https://developer.amazon.com/avs/home.html#/avs/home) |
 | `secret`        | Retrieve by clicking on the your product listed [here](https://developer.amazon.com/avs/home.html#/avs/home) |
-| `refresh_token` | You must generate this. [See here](#refresh-token) |
+| `refresh_token` | You must generate this. [See below](#refresh-token) |
 
 ### Refresh token ###
 
@@ -113,7 +113,8 @@ python ./avs_client/refreshtoken/serve.py \
     --client-secret=enter-client-secret-here
 ```
 
-Follow the on-screen instructions shown at `http://localhost:9000` in your web browser. On completion Amazon will return your `refresh_token`.
+Follow the on-screen instructions shown at `http://localhost:9000` in your web browser. 
+On completion Amazon will return your `refresh_token` - which you will require to [send audio](#file-audio) or [recorded voice](#microphone-audio)
 
 ## Steaming audio to AVS ##
 `alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
