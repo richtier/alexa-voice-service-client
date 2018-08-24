@@ -100,7 +100,7 @@ To enable this first go [here](https://developer.amazon.com/avs/home.html#/avs/h
 | setting             | value                            |
 | ------------------- | ---------------------------------|
 | Allowed Origins     | https://localhost:9000           |
-| Allowed Return URLs | https://localhost:9000/callback/ |
+| Allowed Return URLs | http://localhost:9000/callback/ |
 
 Note what you entered for Product ID under Product Information, as this will be used as the device-type-id (case sensitive!)
 
