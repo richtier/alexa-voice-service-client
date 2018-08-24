@@ -32,7 +32,7 @@ with open('./output.wav', 'wb') as f:
     f.write(alexa_response_audio)
 ```
 
-Now listen to `output.wave` and Alexa should tell you the time.
+Now listen to `output.wav` and Alexa should tell you the time.
 
 ### Microphone audio ###
 ```py
@@ -114,7 +114,7 @@ python ./avs_client/refreshtoken/serve.py \
 ```
 
 Follow the on-screen instructions shown at `http://localhost:9000` in your web browser. 
-On completion Amazon will return your `refresh_token` - which you will require to [send audio](#file-audio) or [recorded voice](#microphone-audio)
+On completion Amazon will return your `refresh_token` - which you will require to [send audio](#file-audio) or [recorded voice](#microphone-audio).
 
 ## Steaming audio to AVS ##
 `alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
@@ -123,7 +123,7 @@ AVS requires the audio data to be 16bit Linear PCM (LPCM16), 16kHz sample rate, 
 
 ## Persistent AVS connection ##
 
-Calling `alexa_client.connect()` creates a persistent connection to AVS. The connection may get forcefully closed due to inactivity. Keep open by calling `alexa_client.alexa_client.conditional_ping()`:
+Calling `alexa_client.connect()` creates a persistent connection to AVS. The connection may get forcefully closed due to inactivity. Keep open by calling `alexa_client.conditional_ping()`:
 
 ```py
 import threading
