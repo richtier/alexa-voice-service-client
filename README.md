@@ -27,9 +27,9 @@ alexa_client = AlexaVoiceServiceClient(
 )
 alexa_client.connect()  # authenticate and other handshaking steps
 with open('./tests/resources/alexa_what_time_is_it.wav', 'rb') as f:
-    alexa_response_audio = alexa_client.send_audio_file(f)
-with open('./output.wav', 'wb') as f:
-    f.write(alexa_response_audio)
+    for i, alexa_audio in enumerate(alexa_client.send_audio_file(f)):
+        with open(f'./output-{i}.wav', 'wb') as f:
+            f.write(alexa_audio)
 ```
 
 Now listen to `output.wav` and Alexa should tell you the time.
@@ -144,7 +144,7 @@ You will only need this if you intend to run the process for more than five minu
 To run the unit tests, call the following commands:
 
 ```sh
-pip install -r requirements-dev.txt
+pip install -e .[test]
 ./scripts/tests.sh
 ```
 
