@@ -1,6 +1,5 @@
 import json
 import http
-import typing
 import uuid
 
 from requests_toolbelt import MultipartDecoder, MultipartEncoder
@@ -75,7 +74,7 @@ class ConnectionManager:
 
     def send_audio_file(
         self, audio_file, device_state, authentication_headers
-    ) -> bytes:
+    ):
         """
         Send audio to AVS
 
@@ -144,7 +143,7 @@ class ConnectionManager:
         return self.connection.get_response(stream_id)
 
     @staticmethod
-    def parse_response(response) -> typing.Union[bytes, None]:
+    def parse_response(response):
         if response.status == http.client.NO_CONTENT:
             return None
         if not response.status == http.client.OK:
@@ -159,9 +158,9 @@ class ConnectionManager:
                 return part.content
 
     @staticmethod
-    def generate_dialogue_id() -> str:
+    def generate_dialogue_id():
         return str(uuid.uuid4())
 
     @staticmethod
-    def generate_message_id() -> str:
+    def generate_message_id():
         return str(uuid.uuid4())
