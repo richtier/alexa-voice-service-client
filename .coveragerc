@@ -1,2 +1,2 @@
 [run]
-omit =.venv/*,venv/*,tests/*,setup.py
+omit =.venv/*,venv/*,tests/*,setup.py,avs_client/refreshtoken/serve.py,avs_client/avs_client/device.py
