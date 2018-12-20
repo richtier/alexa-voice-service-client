@@ -194,13 +194,18 @@ def test_parse_response_200(
         status_code=200
     )
 
-    audio_data = manager.send_audio_file(
+    directives = manager.send_audio_file(
         audio_file=audio_file,
         device_state=device_state,
         authentication_headers=authentication_headers,
     )
-
-    assert audio_data == fixtures.audio_response_data
+    for directive in directives:
+        assert directive.content_id == (
+            '<DeviceTTSRenderer_'
+            'bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815>'
+        )
+        assert directive.audio_attachment == fixtures.audio_response_data
+        assert directive.name == 'Speak'
 
 
 def test_send_audio_204_response(

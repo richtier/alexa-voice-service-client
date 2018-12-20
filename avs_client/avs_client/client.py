@@ -55,7 +55,7 @@ class AlexaVoiceServiceClient:
                 device_state=self.device_manager.get_device_state(),
             )
 
-    def send_audio_file(self, audio_file) -> bytes:
+    def send_audio_file(self, audio_file):
         with self.ping_manager.update_ping_deadline():
             headers = self.authentication_manager.get_headers()
             return self.connection_manager.send_audio_file(

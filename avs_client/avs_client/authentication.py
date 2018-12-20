@@ -17,7 +17,7 @@ class AlexaVoiceServiceTokenAuthenticator:
         )
 
     @helpers.expiring_memo(ttl=(60*60)-30)
-    def retrieve_api_token(self) -> str:
+    def retrieve_api_token(self):
         """
         Retrieve the access token from AVS.
 
@@ -47,7 +47,7 @@ class AlexaVoiceServiceTokenAuthenticator:
     def prefetch_api_token(self):
         self.retrieve_api_token()
 
-    def get_headers(self) -> dict:
+    def get_headers(self):
         return {
             'Authorization': 'Bearer {0}'.format(self.retrieve_api_token())
         }
