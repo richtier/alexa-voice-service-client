@@ -2,9 +2,11 @@ import json
 import http
 import uuid
 
-from requests_toolbelt import MultipartDecoder, MultipartEncoder
+from requests_toolbelt import MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
+
+from avs_client.avs_client import helpers
 
 
 class ConnectionManager:
@@ -148,14 +150,7 @@ class ConnectionManager:
             return None
         if not response.status == http.client.OK:
             raise HTTPError(response=response)
-
-        parsed = MultipartDecoder(
-            response.read(),
-            response.headers['content-type'][0].decode()
-        )
-        for part in parsed.parts:
-            if part.headers[b'Content-Type'] == b'application/octet-stream':
-                return part.content
+        return helpers.AVSMultipartDecoder(response).directives
 
     @staticmethod
     def generate_dialogue_id():
