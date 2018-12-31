@@ -22,6 +22,24 @@ class TestConnectionManager(TestConnectionMixin, connection.ConnectionManager):
         return 'message-id'
 
 
+@pytest.fixture(autouse=True)
+def some_mp3_stream_download(requests_mocker):
+    return requests_mocker.get(
+        'https://www.example.com/some/mp3.mp3',
+        status_code=200,
+        content=fixtures.audio_response_data,
+    )
+
+
+@pytest.fixture(autouse=True)
+def some_other_mp3_stream_download(requests_mocker):
+    return requests_mocker.get(
+        'https://www.example.com/some/other/mp3.mp3',
+        status_code=200,
+        content=fixtures.audio_response_data,
+    )
+
+
 @pytest.fixture
 def manager():
     return TestConnectionManager()
@@ -172,24 +190,61 @@ def test_send_audio_file(
     assert parsed.parts[1].content == b'things'
 
 
-def test_parse_response_200(
+def test_speak_and_play_response_200(
+    manager, audio_file, device_state, authentication_headers
+):
+    manager.create_connection()
+    manager.mock_response(
+        data=fixtures.flash_briefing_multipart.to_string(),
+        headers=[
+            (b'access-control-allow-origin', b'*'),
+            (b'x-amzn-requestid', b'06aaf3fffec6be28-00003161-00006c28'),
+            (b'content-type', fixtures.flash_briefing_multipart.content_type)
+        ],
+        status_code=200
+    )
+
+    directives = list(manager.send_audio_file(
+        audio_file=audio_file,
+        device_state=device_state,
+        authentication_headers=authentication_headers,
+    ))
+    assert len(directives) == 3
+
+    directive_one, directive_two, directive_three = directives
+
+    assert directive_one.name == 'Speak'
+    assert directive_one.get_content_id(directive_one.directive) == (
+        '<DailyBriefingPrompt.ChannelIntroduction.'
+        '5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:'
+        'DailyBriefingIntroduction_1708175498>'
+    )
+    assert directive_one.audio_attachment == fixtures.audio_response_data
+
+    assert directive_two.name == 'Play'
+    assert directive_two.get_url(directive_two.directive) == (
+        'https://www.example.com/some/mp3.mp3'
+    )
+    assert directive_two.audio_attachment == fixtures.audio_response_data
+
+    assert directive_three.name == 'Play'
+    assert directive_three.get_url(directive_three.directive) == (
+        'https://www.example.com/some/other/mp3.mp3'
+    )
+    assert directive_three.audio_attachment == fixtures.audio_response_data
+
+
+def test_parse_speak_response_200(
     manager, audio_file, device_state, authentication_headers
 ):
     manager.create_connection()
 
     manager.mock_response(
-        data=fixtures.audio_response_multipart,
+        data=fixtures.time_multipart.to_string(),
         headers=[
             (b'access-control-allow-origin', b'*'),
             (b'x-amzn-requestid', b'06aaf3fffec6be28-00003161-00006c28'),
-            (
-                b'content-type',
-                (
-                    b'multipart/related;'
-                    b'boundary=22b41228-f803-447b-9cde-f99d0a1652b1;'
-                    b'start=metadata.1503696654430;type="application/json"'
-                )
-            )
+            (b'content-type', fixtures.time_multipart.content_type)
         ],
         status_code=200
     )
@@ -200,7 +255,7 @@ def test_parse_response_200(
         authentication_headers=authentication_headers,
     )
     for directive in directives:
-        assert directive.content_id == (
+        assert directive.get_content_id(directive.directive) == (
             '<DeviceTTSRenderer_'
             'bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815>'
         )

@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='avs_client',
-    version='1.0.0',
+    version='1.1.0',
     packages=find_packages(exclude=["tests.*", "tests"]),
     url='https://github.com/richtier/alexa-voice-service-client',
     license='MIT',
@@ -26,7 +26,6 @@ setup(
             'pytest-sugar==0.9.0',
             'pytest==3.2.0',
             'requests_mock==1.3.0',
-            'twine==1.9.1',
             'codecov==2.0.9',
             'twine>=1.11.0,<2.0.0',
             'wheel>=0.31.0,<1.0.0',

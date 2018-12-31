@@ -26,9 +26,9 @@ alexa_client = AlexaVoiceServiceClient(
 )
 alexa_client.connect()  # authenticate and other handshaking steps
 with open('./tests/resources/alexa_what_time_is_it.wav', 'rb') as f:
-    for directive in alexa_client.send_audio_file(f):
-        if directive.name == 'Speak':
-            with open(f'./{directive.content_id}.mp3', 'wb') as f:
+    for i, directive in enumerate(alexa_client.send_audio_file(f)):
+        if directive.name in ['Speak', 'Play']:
+            with open(f'./output_{i}.mp3', 'wb') as f:
                 f.write(directive.audio_attachment)
 ```
 
@@ -66,9 +66,9 @@ try:
     stream.start_stream()
     print('listening. Press CTRL + C to exit.')
     alexa_client.connect()
-    for directive in alexa_client.send_audio_file(buffer):
-        if directive.name == 'Speak':
-            with open(f'./{directive.content_id}.mp3', 'wb') as f:
+    for i, directive in enumerate(alexa_client.send_audio_file(buffer)):
+        if directive.name in ['Speak', 'Play']:
+            with open(f'./output_{i}.mp3', 'wb') as f:
                 f.write(directive.audio_attachment)
 finally:
     stream.stop_stream()

@@ -3,6 +3,7 @@ import json
 import pprint
 import time
 
+import requests
 from requests_toolbelt import MultipartDecoder
 
 
@@ -28,22 +29,18 @@ class expiring_memo(object):
 
 
 class Directive:
-    audio_attachment = None
 
-    def __init__(self, directive, audio_attachments):
-        self.directive = directive
-        if self.name == 'Speak':
-            self.audio_attachment = audio_attachments[self.content_id]
+    def __init__(self, content):
+        self.directive = content
+
+    @staticmethod
+    def parse_multipart(part):
+        return json.loads(part.content.decode())['directive']
 
     @classmethod
-    def from_multipart(cls, part, audio_attachments):
-        directive = json.loads(part.content.decode())['directive']
-        return cls(directive, audio_attachments)
-
-    @property
-    def content_id(self):
-        content_id = self.directive['payload']['url'].replace('cid:', '', 1)
-        return '<' + content_id + '>'
+    def from_multipart(cls, part):
+        content = cls.parse_multipart(part)
+        return cls(content)
 
     @property
     def name(self):
@@ -51,6 +48,44 @@ class Directive:
 
     def __repr__(self):
         return str(pprint.pprint(self.directive))
+
+
+class SpeakDirective(Directive):
+    def __init__(self, audio_attachment, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.audio_attachment = audio_attachment
+
+    @staticmethod
+    def get_content_id(directive):
+        content_id = directive['payload']['url'].replace('cid:', '', 1)
+        return '<' + content_id + '>'
+
+    @classmethod
+    def from_multipart(cls, part, audio_attachments):
+        content = cls.parse_multipart(part)
+        return cls(
+            content=content,
+            audio_attachment=audio_attachments[cls.get_content_id(content)]
+        )
+
+
+class PlayDirective(Directive):
+    def __init__(self, audio_attachment, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.audio_attachment = audio_attachment
+
+    @staticmethod
+    def get_url(directive):
+        return directive['payload']['audioItem']['stream']['url']
+
+    @classmethod
+    def from_multipart(cls, part):
+        content = cls.parse_multipart(part)
+        response = requests.get(cls.get_url(content))
+        return cls(
+            content=content,
+            audio_attachment=response.content
+        )
 
 
 class AVSMultipartDecoder:
@@ -76,4 +111,12 @@ class AVSMultipartDecoder:
         audio_attachments = self.audio_attachments
         for part in self.parts:
             if part.headers[b'Content-Type'].startswith(b'application/json'):
-                yield Directive.from_multipart(part, audio_attachments)
+                name = Directive.parse_multipart(part)['header']['name']
+                if name == 'Speak':
+                    yield SpeakDirective.from_multipart(
+                        part=part, audio_attachments=audio_attachments
+                    )
+                elif name == 'Play':
+                    yield PlayDirective.from_multipart(part)
+                else:
+                    yield Directive.from_multipart(part)
