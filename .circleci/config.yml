@@ -26,6 +26,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
+            make lint
             make test
       - run:
           name: report coverage

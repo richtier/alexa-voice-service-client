@@ -18,9 +18,19 @@ test_requirements:
 	pip install -e .[test]
 
 
-test:
-	flake8 --exclude=.venv,venv,snowboy,build,**/fixtures.py
-	pytest --ignore=build --ignore=venv --ignore=.venv --cov=./ --cov-config=.coveragerc --last-failed
+lint:
+	flake8 --exclude=.venv,venv,snowboy,build
 
+
+test:
+	pytest $1 \
+		--ignore=venv \
+		--ignore=.venv \
+		--ignore=build \
+		--cov=./ \
+		--cov-config=.coveragerc \
+		--capture=no \
+		--last-failed \
+		--verbose
 
 .PHONY: build publish_test publish test_requirements test
