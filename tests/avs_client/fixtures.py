@@ -3,9 +3,9 @@ import json
 from requests_toolbelt import MultipartEncoder
 
 
-# noqa
 audio_response_data = open('tests/resources/test.mp3', 'rb').read()
 
+# noqa
 flash_briefing_multipart = MultipartEncoder(
     fields=[
         (
@@ -13,16 +13,16 @@ flash_briefing_multipart = MultipartEncoder(
                 'directive-one',
                 json.dumps({
                     'directive': {
-                        'header':{
+                        'header': {
                             'namespace': 'SpeechSynthesizer',
                             'name': 'Speak',
-                            'messageId': '1c1cf4d9-4c8a-4123-8fd6-e9c46597ca59',
-                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'
+                            'messageId': '1c1cf4d9-4c8a-4123-8fd6-e9c46597ca59',  # noqa
+                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'  # noqa
                         },
                         'payload': {
-                            'url': 'cid:DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction_1708175498',
+                            'url': 'cid:DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction_1708175498',  # noqa
                             'format': 'AUDIO_MPEG',
-                            'token': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction'
+                            'token': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction'  # noqa
                         }
                     }
                 }),
@@ -37,21 +37,21 @@ flash_briefing_multipart = MultipartEncoder(
                         'header': {
                             'namespace': 'AudioPlayer',
                             'name': 'Play',
-                            'messageId': 'd07467ff-fe23-40c4-98b3-b1966f4341bb',
-                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'
+                            'messageId': 'd07467ff-fe23-40c4-98b3-b1966f4341bb',  # noqa
+                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'  # noqa
                         },
                         'payload': {
                             'audioItem': {
-                                'audioItemId': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',
+                                'audioItemId': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',  # noqa
                                 'stream': {
                                     'offsetInMilliseconds': 0,
                                     'expiryTime': '2018-12-31T17:20:14+0000',
-                                    'url': 'https://www.example.com/some/mp3.mp3',
-                                    'token':'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelIntroduction:0',
+                                    'url': 'https://www.example.com/some/mp3.mp3',  # noqa
+                                    'token': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelIntroduction:0',  # noqa
                                     'caption': None
                                 }
                             },
-                        'playBehavior': 'REPLACE_ALL'
+                            'playBehavior': 'REPLACE_ALL'
                         }
                     }
                 }),
@@ -65,19 +65,19 @@ flash_briefing_multipart = MultipartEncoder(
                     'directive': {
                         'header': {
                             'namespace': 'AudioPlayer',
-                            'name':'Play',
-                            'messageId': '511b6df2-f187-43be-89b6-53b20df90dd3',
-                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'
+                            'name': 'Play',
+                            'messageId': '511b6df2-f187-43be-89b6-53b20df90dd3',  # noqa
+                            'dialogRequestId': '43c47763-8f55-4adc-84fb-2c34a615f932'  # noqa
                         },
                         'payload': {
                             'playBehavior': 'ENQUEUE',
                             'audioItem': {
-                                'audioItemId': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',
+                                'audioItemId': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',  # noqa
                                 'stream': {
                                     'offsetInMilliseconds': 0,
                                     'expiryTime': '2018-12-31T17:20:14+0000',
-                                    'url': 'https://www.example.com/some/other/mp3.mp3',
-                                    'token': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',
+                                    'url': 'https://www.example.com/some/other/mp3.mp3',  # noqa
+                                    'token': 'amzn1.as-ct.v1.Domain:Application:DailyBriefing:TTS#ACRI#url#ACRI#DailyBriefingPrompt.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:ChannelItem:0:0',  # noqa
                                     'caption': None
                                 }
                             }
@@ -92,13 +92,14 @@ flash_briefing_multipart = MultipartEncoder(
                 'directive-four',
                 audio_response_data,
                 'application/octet-stream',
-                {'Content-ID': '<DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction_1708175498>'},
+                {'Content-ID': '<DailyBriefingPrompt.ChannelIntroduction.5c4c5f3e-0c0f-4dac-b0e0-ba70065b8bc0:Say:DAILYBRIEFING:DailyBriefingIntroduction_1708175498>'},  # noqa
             )
         )
     ],
 )
 
 
+# noqa
 time_multipart = MultipartEncoder(
     fields=[
         (
@@ -109,13 +110,13 @@ time_multipart = MultipartEncoder(
                         'header': {
                             'namespace': 'SpeechSynthesizer',
                             'name': 'Speak',
-                            'messageId': '3009890b-a556-48bd-87f6-cae9476f3cd8',
-                            'dialogRequestId': 'f3bd01b3-fb8b-4468-ba30-32bad766b3e6'
+                            'messageId': '3009890b-a556-48bd-87f6-cae9476f3cd8',  # noqa
+                            'dialogRequestId': 'f3bd01b3-fb8b-4468-ba30-32bad766b3e6'  # noqa
                         },
                         'payload': {
-                            'url': 'cid:DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815',
+                            'url': 'cid:DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815',  # noqa
                             'format': 'AUDIO_MPEG',
-                            'token': 'amzn1.as-ct.v1.Domain:Application:Notifications#ACRI#DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4'
+                            'token': 'amzn1.as-ct.v1.Domain:Application:Notifications#ACRI#DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4'  # noqa
                         }
                     }
                 }),
@@ -127,7 +128,7 @@ time_multipart = MultipartEncoder(
                 'directive-two',
                 audio_response_data,
                 'application/octet-stream',
-                {'Content-ID': '<DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815>'},
+                {'Content-ID': '<DeviceTTSRenderer_bf8529e6-0708-4ac3-93a0-e57b0aff5ef4_1934409815>'},  # noqa
             )
         )
     ]
