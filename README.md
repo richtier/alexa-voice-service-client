@@ -76,6 +76,52 @@ finally:
     p.terminate()
 ```
 
+### Voice Request Lifecycle
+
+An Alexa command may relate to a previous command e.g,
+
+[you] "Alexa, open the magic door"
+[Alexa] "...do you want to go to the dark forest or turn back?"
+[you] "Go to the dark forest"
+[Alexa] "...it's creepy. Keep going or turn back?"
+[you] "Keep going"
+[Alexa] "...it's getting darker."
+
+This request lifecycle can be managed by passing in a dialog request id:
+
+```py
+import io
+
+from avs_client import AlexaVoiceServiceClient
+from avs_client.avs_client import helpers
+from pydub import AudioSegment
+from pydub.playback import play
+
+
+alexa_client = AlexaVoiceServiceClient(
+    client_id='my-client-id',
+    secret='my-secret',
+    refresh_token='my-refresh-token',
+)
+alexa_client.connect()  # authenticate and other handshaking steps
+
+input_file_names = [
+    './tests/resources/alexa_open_magic_door.wav',
+    './tests/resources/alexa_go_to_dark_forest.wav',
+    './tests/resources/alexa_keep_going.wav',
+]
+
+dialog_request_id = helpers.generate_unique_id()
+for input_file_name in input_file_names:
+    with open(input_file_name, 'rb') as f:
+        for directive in alexa_client.send_audio_file(f, dialog_request_id=dialog_request_id):
+            if directive.name in ['Speak', 'Play']:
+                track = AudioSegment.from_mp3(io.BytesIO(directive.audio_attachment))
+                play(track)
+
+```
+
+
 ## Authentication
 
 To use AVS you must first have a [developer account](http://developer.amazon.com). Then register your product [here](https://developer.amazon.com/avs/home.html#/avs/products/new). Choose "Application" under "Is your product an app or a device"?

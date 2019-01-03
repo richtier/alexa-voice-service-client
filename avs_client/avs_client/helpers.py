@@ -2,6 +2,7 @@ import collections
 import json
 import pprint
 import time
+import uuid
 
 import requests
 from requests_toolbelt import MultipartDecoder
@@ -120,3 +121,7 @@ class AVSMultipartDecoder:
                     yield PlayDirective.from_multipart(part)
                 else:
                     yield Directive.from_multipart(part)
+
+
+def generate_unique_id():
+    return str(uuid.uuid4())
