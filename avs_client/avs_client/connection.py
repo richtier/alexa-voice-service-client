@@ -1,6 +1,5 @@
 import json
 import http
-import uuid
 
 from requests_toolbelt import MultipartEncoder
 from requests.exceptions import HTTPError
@@ -75,7 +74,8 @@ class ConnectionManager:
         assert response.status in [http.client.NO_CONTENT, http.client.OK]
 
     def send_audio_file(
-        self, audio_file, device_state, authentication_headers
+        self, audio_file, device_state, authentication_headers,
+        dialog_request_id
     ):
         """
         Send audio to AVS
@@ -94,7 +94,7 @@ class ConnectionManager:
                     'namespace': 'SpeechRecognizer',
                     'name': 'Recognize',
                     'messageId': self.generate_message_id(),
-                    'dialogRequestId': self.generate_dialogue_id(),
+                    'dialogRequestId': dialog_request_id,
                 },
                 'payload': {
                     'profile': 'CLOSE_TALK',
@@ -153,9 +153,5 @@ class ConnectionManager:
         return helpers.AVSMultipartDecoder(response).directives
 
     @staticmethod
-    def generate_dialogue_id():
-        return str(uuid.uuid4())
-
-    @staticmethod
     def generate_message_id():
-        return str(uuid.uuid4())
+        return helpers.generate_unique_id()

@@ -11,10 +11,6 @@ from tests.avs_client import fixtures
 
 
 class TestConnectionManager(TestConnectionMixin, connection.ConnectionManager):
-    @staticmethod
-    def generate_dialogue_id():
-        # override existing non-deterministic method
-        return 'dialogue-id'
 
     @staticmethod
     def generate_message_id():
@@ -143,6 +139,7 @@ def test_send_audio_file(
             device_state=device_state,
             authentication_headers=authentication_headers,
             audio_file=audio_file,
+            dialog_request_id='dialogue-id',
         )
 
     headers = dict(list(manager.connection.recent_stream.headers.items()))
@@ -208,6 +205,7 @@ def test_speak_and_play_response_200(
         audio_file=audio_file,
         device_state=device_state,
         authentication_headers=authentication_headers,
+        dialog_request_id='dialogue-id',
     ))
     assert len(directives) == 3
 
@@ -253,6 +251,7 @@ def test_parse_speak_response_200(
         audio_file=audio_file,
         device_state=device_state,
         authentication_headers=authentication_headers,
+        dialog_request_id='dialogue-id',
     )
     for directive in directives:
         assert directive.get_content_id(directive.directive) == (
@@ -273,6 +272,7 @@ def test_send_audio_204_response(
         device_state=device_state,
         authentication_headers=authentication_headers,
         audio_file=audio_file,
+        dialog_request_id='dialogue-id',
     )
 
     assert response is None
@@ -292,6 +292,7 @@ def test_send_audio_non_200_response(
             device_state=device_state,
             authentication_headers=authentication_headers,
             audio_file=audio_file,
+            dialog_request_id='dialogue-id',
         )
 
 

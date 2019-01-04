@@ -2,7 +2,9 @@ from functools import wraps
 
 from hyper.http20.exceptions import StreamResetError
 
-from avs_client.avs_client import authentication, connection, device, ping
+from avs_client.avs_client import (
+    authentication, connection, device, helpers, ping
+)
 
 
 class AlexaVoiceServiceClient:
@@ -55,13 +57,15 @@ class AlexaVoiceServiceClient:
                 device_state=self.device_manager.get_device_state(),
             )
 
-    def send_audio_file(self, audio_file):
+    def send_audio_file(self, audio_file, dialog_request_id=None):
+        dialog_request_id = dialog_request_id or helpers.generate_unique_id()
         with self.ping_manager.update_ping_deadline():
             headers = self.authentication_manager.get_headers()
             return self.connection_manager.send_audio_file(
                 authentication_headers=headers,
                 device_state=self.device_manager.get_device_state(),
                 audio_file=audio_file,
+                dialog_request_id=dialog_request_id,
             )
 
     @retry_once_on_stream_reset
