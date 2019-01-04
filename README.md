@@ -13,7 +13,13 @@
 pip install avs_client
 ```
 
-## Usage ##
+or if you want to run the demos:
+
+```sh
+pip install avs_client[demo]
+```
+
+## Usage
 
 ### File audio ###
 ```py
@@ -32,11 +38,12 @@ with open('./tests/resources/alexa_what_time_is_it.wav', 'rb') as f:
                 f.write(directive.audio_attachment)
 ```
 
-Now listen to `output.wav` and Alexa should tell you the time.
+Now listen to `output_0.wav` and Alexa should tell you the time.
 
 ### Microphone audio
+
 ```py
-from io import BytesIO
+import io
 
 from avs_client import AlexaVoiceServiceClient
 import pyaudio
@@ -61,7 +68,7 @@ alexa_client = AlexaVoiceServiceClient(
     refresh_token='my-refresh-token',
 )
 
-buffer = BytesIO()
+buffer = io.BytesIO()
 try:
     stream.start_stream()
     print('listening. Press CTRL + C to exit.')
@@ -80,47 +87,34 @@ finally:
 
 An Alexa command may relate to a previous command e.g,
 
-[you] "Alexa, open the magic door"
-[Alexa] "...do you want to go to the dark forest or turn back?"
-[you] "Go to the dark forest"
-[Alexa] "...it's creepy. Keep going or turn back?"
-[you] "Keep going"
-[Alexa] "...it's getting darker."
+[you] "Alexa, play twenty questions"
+[Alexa] "Is it a animal, mineral, or vegetable?"
+[you] "Mineral"
+[Alexa] "Is it valuable"
+[you] "No"
+[Alexa] "is it..."
 
-This request lifecycle can be managed by passing in a dialog request id:
+This can be achieved by passing the same dialog request ID to multiple `send_audio_file` calls:
 
 ```py
-import io
-
-from avs_client import AlexaVoiceServiceClient
 from avs_client.avs_client import helpers
-from pydub import AudioSegment
-from pydub.playback import play
-
-
-alexa_client = AlexaVoiceServiceClient(
-    client_id='my-client-id',
-    secret='my-secret',
-    refresh_token='my-refresh-token',
-)
-alexa_client.connect()  # authenticate and other handshaking steps
-
-input_file_names = [
-    './tests/resources/alexa_open_magic_door.wav',
-    './tests/resources/alexa_go_to_dark_forest.wav',
-    './tests/resources/alexa_keep_going.wav',
-]
 
 dialog_request_id = helpers.generate_unique_id()
-for input_file_name in input_file_names:
-    with open(input_file_name, 'rb') as f:
-        for directive in alexa_client.send_audio_file(f, dialog_request_id=dialog_request_id):
-            if directive.name in ['Speak', 'Play']:
-                track = AudioSegment.from_mp3(io.BytesIO(directive.audio_attachment))
-                play(track)
+directives_one = alexa_client.send_audio_file(audio_one, dialog_request_id=dialog_request_id)
+directives_two = alexa_client.send_audio_file(audio_two, dialog_request_id=dialog_request_id)
+directives_three = alexa_client.send_audio_file(audio_three, dialog_request_id=dialog_request_id)
 
 ```
 
+Run the streaming microphone audio demo to use this feature:
+
+```sh
+pip install avs_client[demo]
+python -m avs_client.demo.streaming_microphone \
+    --client-id="{enter-client-id-here}" \
+    --client-secret="{enter-client-secret-here"} \
+    --refresh-token="{enter-refresh-token-here}"
+```
 
 ## Authentication
 
@@ -140,8 +134,8 @@ You will need to login to Amazon via a web browser to get your refresh token.
 
 To enable this first go [here](https://developer.amazon.com/avs/home.html#/avs/home) and click on your product to set some security settings under `Security Profile`:
 
-| setting             | value                            |
-| ------------------- | ---------------------------------|
+| setting             | value                           |
+| ------------------- | --------------------------------|
 | Allowed Origins     | http://localhost:9000           |
 | Allowed Return URLs | http://localhost:9000/callback/ |
 
@@ -150,10 +144,10 @@ Note what you entered for Product ID under Product Information, as this will be 
 Then run:
 
 ```sh
-python ./avs_client/refreshtoken/serve.py \
-    --device-type-id=enter-device-type-id-here \
-    --client-id=enter-client-id-here \
-    --client-secret=enter-client-secret-here
+python -m avs_client.refreshtoken.serve \
+    --device-type-id="{enter-device-type-id-here}" \
+    --client-id="{enter-client-id-here}" \
+    --client-secret="{enter-client-secret-here}"
 ```
 
 Follow the on-screen instructions shown at `http://localhost:9000` in your web browser. 
@@ -187,6 +181,8 @@ You will only need this if you intend to run the process for more than five minu
 To run the unit tests, call the following commands:
 
 ```sh
+git clone git@github.com:richtier/alexa-voice-service-client.git
+pip install -e .[test]
 make test_requirements
 make test
 ```

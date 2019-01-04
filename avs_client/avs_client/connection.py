@@ -93,7 +93,7 @@ class ConnectionManager:
                 'header': {
                     'namespace': 'SpeechRecognizer',
                     'name': 'Recognize',
-                    'messageId': helpers.generate_unique_id(),
+                    'messageId': self.generate_message_id(),
                     'dialogRequestId': dialog_request_id,
                 },
                 'payload': {
@@ -148,7 +148,10 @@ class ConnectionManager:
     def parse_response(response):
         if response.status == http.client.NO_CONTENT:
             return None
-            yield
         if not response.status == http.client.OK:
             raise HTTPError(response=response)
         return helpers.AVSMultipartDecoder(response).directives
+
+    @staticmethod
+    def generate_message_id():
+        return helpers.generate_unique_id()

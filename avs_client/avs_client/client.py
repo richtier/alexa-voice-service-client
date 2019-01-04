@@ -6,6 +6,7 @@ from avs_client.avs_client import (
     authentication, connection, device, helpers, ping
 )
 
+
 class AlexaVoiceServiceClient:
     authentication_manager_class = (
         authentication.AlexaVoiceServiceTokenAuthenticator

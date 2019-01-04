@@ -74,12 +74,16 @@ def test_client_send_audio_file(client):
     client.device_manager.get_device_state.return_value = {'device': 'state'}
 
     audio_file = BytesIO(b'things')
-    client.send_audio_file(audio_file)
+    client.send_audio_file(
+        audio_file,
+        dialog_request_id='dialog-id'
+    )
 
     assert client.connection_manager.send_audio_file.call_args == call(
         audio_file=audio_file,
         device_state={'device': 'state'},
         authentication_headers={'auth': 'value'},
+        dialog_request_id='dialog-id',
     )
     assert client.ping_manager.update_ping_deadline.call_count == 1
 

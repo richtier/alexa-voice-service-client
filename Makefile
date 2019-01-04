@@ -31,6 +31,6 @@ test:
 		--cov-config=.coveragerc \
 		--capture=no \
 		--last-failed \
-		--verbose
+		-vv
 
 .PHONY: build publish_test publish test_requirements test
