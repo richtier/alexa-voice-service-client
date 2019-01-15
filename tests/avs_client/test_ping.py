@@ -1,34 +1,37 @@
-from datetime import datetime
+from unittest import mock
 
-from freezegun import freeze_time
 import pytest
 
 from avs_client.avs_client import ping
+from resettabletimer import FakeTimer
+
+
+class FakePingManager(ping.PingManagerMixin, FakeTimer):
+    reset = mock.Mock()
 
 
 @pytest.fixture
-def manager():
-    return ping.PingManager()
+def ping_handler():
+    return mock.Mock()
 
 
-@freeze_time(datetime(2012, 1, 14, 12, 0, 1))
-@pytest.mark.parametrize('ping_deadline,expected', [
-    [None, False],
-    [datetime(2012, 1, 14, 12, 0, 2), False],
-    [datetime(2012, 1, 14, 12, 0, 1), True],
-    [datetime(2012, 1, 14, 12, 0, 0), True],
-])
-def test_should_ping(manager, ping_deadline, expected):
-    manager.ping_deadline = ping_deadline
-
-    assert manager.should_ping() == expected
+@pytest.fixture
+def manager(ping_handler):
+    return FakePingManager(100, ping_handler)
 
 
-@freeze_time(datetime(2012, 1, 14, 12, 0, 1))
 def test_update_ping_deadline(manager):
-    assert manager.ping_deadline is None
+    manager.reset = mock.Mock()
 
     with manager.update_ping_deadline():
         pass
 
-    assert manager.ping_deadline == datetime(2012, 1, 14, 12, 4, 1)
+    assert manager.reset.call_count == 1
+
+
+def test_call_resets_timer(manager, ping_handler):
+    manager.start()
+
+    manager.pass_time(100)
+
+    assert ping_handler.call_count == 1

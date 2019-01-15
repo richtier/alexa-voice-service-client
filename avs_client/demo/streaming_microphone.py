@@ -7,7 +7,6 @@ from pydub.playback import play
 import pyaudio
 
 from avs_client import AlexaVoiceServiceClient
-from avs_client.avs_client import helpers
 
 
 def main(client_id, secret, refresh_token):
@@ -33,7 +32,7 @@ def main(client_id, secret, refresh_token):
         start=False
     )
 
-    dialog_request_id = helpers.generate_unique_id()
+    dialog_request_id = None
 
     try:
         print('listening. Press CTRL + C to exit.')
@@ -48,8 +47,11 @@ def main(client_id, secret, refresh_token):
             )
             stream.stop_stream()
             if directives:
+                dialog_request_id = None
                 print('Alexa\'s turn.')
                 for directive in directives:
+                    if directive.name == 'ExpectSpeech':
+                        dialog_request_id = directive.dialog_request_id
                     if directive.name in ['Speak', 'Play']:
                         output_buffer = io.BytesIO(directive.audio_attachment)
                         track = AudioSegment.from_mp3(output_buffer)

@@ -1,6 +1,4 @@
-from functools import wraps
-
-from hyper.http20.exceptions import StreamResetError
+import warnings
 
 from avs_client.avs_client import (
     authentication, connection, device, helpers, ping
@@ -26,23 +24,17 @@ class AlexaVoiceServiceClient:
         )
         self.device_manager = self.device_manager_class()
         self.connection_manager = self.connection_manager_class()
-        self.ping_manager = self.ping_manager_class()
-
-    def retry_once_on_stream_reset(f):
-        @wraps(f)
-        def wrapped(self, *args, **kwargs):
-            try:
-                return f(self, *args, **kwargs)
-            except StreamResetError:
-                self.connect()
-                return f(self, *args, **kwargs)
-        return wrapped
+        self.ping_manager = self.ping_manager_class(60*4, self.ping)
 
     def connect(self):
         self.authentication_manager.prefetch_api_token()
         self.connection_manager.create_connection()
         self.establish_downchannel_stream()
         self.synchronise_device_state()
+        self.ping_manager.start()
+
+    def conditional_ping(self):
+        warnings.warn('Deprecated. Removing in v2.0.0.', DeprecationWarning)
 
     def establish_downchannel_stream(self):
         return self.connection_manager.establish_downchannel_stream(
@@ -68,11 +60,8 @@ class AlexaVoiceServiceClient:
                 dialog_request_id=dialog_request_id,
             )
 
-    @retry_once_on_stream_reset
-    def conditional_ping(self):
-        if self.ping_manager.should_ping():
-            with self.ping_manager.update_ping_deadline():
-                headers = self.authentication_manager.get_headers()
-                return self.connection_manager.ping(
-                    authentication_headers=headers,
-                )
+    def ping(self):
+        headers = self.authentication_manager.get_headers()
+        return self.connection_manager.ping(
+            authentication_headers=headers,
+        )

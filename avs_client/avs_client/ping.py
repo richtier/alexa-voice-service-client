@@ -1,27 +1,31 @@
 import contextlib
-from datetime import datetime, timedelta
+import warnings
+
+from resettabletimer import ResettableTimer
 
 
-class PingManager:
-    ping_deadline = None
-    delta = timedelta(seconds=60*4)
+class PingManagerMixin:
+
+    @property
+    def __function(self):
+        return self.wrapped_function
+
+    @__function.setter
+    def __function(self, value):
+        self.function = value
+
+    def wrapped_function(self, *args, **kwargs):
+        self.function(*args, **kwargs)
+        self.reset()
 
     @contextlib.contextmanager
     def update_ping_deadline(self):
-        """
-        Updates time when ping should be called.
-
-        The client must send a PING frame to AVS every five minutes when the
-        connection is idle. Failure to do so will result in a closed
-        connection.
-
-        """
-
         yield
-        self.ping_deadline = datetime.utcnow() + self.delta
+        self.reset()
 
     def should_ping(self):
-        return (
-            self.ping_deadline is not None and
-            datetime.utcnow() >= self.ping_deadline
-        )
+        warnings.warn('Deprecated. Removing in v2.0.0.', DeprecationWarning)
+
+
+class PingManager(PingManagerMixin, ResettableTimer):
+    pass

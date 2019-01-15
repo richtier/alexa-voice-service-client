@@ -160,21 +160,7 @@ AVS requires the audio data to be 16bit Linear PCM (LPCM16), 16kHz sample rate, 
 
 ## Persistent AVS connection
 
-Calling `alexa_client.connect()` creates a persistent connection to AVS. The connection may get forcefully closed due to inactivity. Keep open by calling `alexa_client.conditional_ping()`:
-
-```py
-import threading
-
-
-def ping_avs():
-    while True:
-        alexa_client.conditional_ping()
-
-ping_thread = threading.Thread(target=ping_avs)
-ping_thread.start()
-```
-
-You will only need this if you intend to run the process for more than five minutes. [More information](https://developer.amazon.com/public/solutions/alexa/alexa-voice-service/docs/managing-an-http-2-connection).
+Calling `alexa_client.connect()` creates a persistent connection to AVS. A thread runs that pings AVS after 4 minutes of no request being made to AVS. This prevents the connection getting forcefully closed due to inactivity.
 
 ## Unit test ##
 
