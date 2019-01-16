@@ -89,6 +89,13 @@ class PlayDirective(Directive):
         )
 
 
+class ExpectSpeechDirective(Directive):
+
+    @property
+    def dialog_request_id(self):
+        return self.directive['header']['dialogRequestId']
+
+
 class AVSMultipartDecoder:
 
     def __init__(self, response):
@@ -119,6 +126,8 @@ class AVSMultipartDecoder:
                     )
                 elif name == 'Play':
                     yield PlayDirective.from_multipart(part)
+                elif name == 'ExpectSpeech':
+                    yield ExpectSpeechDirective.from_multipart(part)
                 else:
                     yield Directive.from_multipart(part)
 
