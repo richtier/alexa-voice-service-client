@@ -10,22 +10,22 @@
 
 ## Installation
 ```sh
-pip install avs_client
+pip install alexa_client
 ```
 
 or if you want to run the demos:
 
 ```sh
-pip install avs_client[demo]
+pip install alexa_client[demo]
 ```
 
 ## Usage
 
 ### File audio ###
 ```py
-from avs_client import AlexaVoiceServiceClient
+from alexa_client import AlexaClient
 
-alexa_client = AlexaVoiceServiceClient(
+alexa_client = AlexaClient(
     client_id='my-client-id',
     secret='my-secret',
     refresh_token='my-refresh-token',
@@ -45,7 +45,7 @@ Now listen to `output_0.wav` and Alexa should tell you the time.
 ```py
 import io
 
-from avs_client import AlexaVoiceServiceClient
+from alexa_client import AlexaClient
 import pyaudio
 
 
@@ -62,7 +62,7 @@ stream = p.open(
     stream_callback=callback,
 )
 
-alexa_client = AlexaVoiceServiceClient(
+alexa_client = AlexaClient(
     client_id='my-client-id',
     secret='my-secret',
     refresh_token='my-refresh-token',
@@ -83,7 +83,7 @@ finally:
     p.terminate()
 ```
 
-### Voice Request Lifecycle
+### Multi-step requests
 
 An Alexa command may relate to a previous command e.g,
 
@@ -97,7 +97,7 @@ An Alexa command may relate to a previous command e.g,
 This can be achieved by passing the same dialog request ID to multiple `send_audio_file` calls:
 
 ```py
-from avs_client.avs_client import helpers
+from alexa_client.alexa_client import helpers
 
 dialog_request_id = helpers.generate_unique_id()
 directives_one = alexa_client.send_audio_file(audio_one, dialog_request_id=dialog_request_id)
@@ -109,8 +109,8 @@ directives_three = alexa_client.send_audio_file(audio_three, dialog_request_id=d
 Run the streaming microphone audio demo to use this feature:
 
 ```sh
-pip install avs_client[demo]
-python -m avs_client.demo.streaming_microphone \
+pip install alexa_client[demo]
+python -m alexa_client.demo.streaming_microphone \
     --client-id="{enter-client-id-here}" \
     --client-secret="{enter-client-secret-here"} \
     --refresh-token="{enter-refresh-token-here}"
@@ -144,7 +144,7 @@ Note what you entered for Product ID under Product Information, as this will be 
 Then run:
 
 ```sh
-python -m avs_client.refreshtoken.serve \
+python -m alexa_client.refreshtoken.serve \
     --device-type-id="{enter-device-type-id-here}" \
     --client-id="{enter-client-id-here}" \
     --client-secret="{enter-client-secret-here}"

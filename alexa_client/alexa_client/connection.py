@@ -5,7 +5,7 @@ from requests_toolbelt import MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
 
-from avs_client.avs_client import helpers
+from alexa_client.alexa_client import helpers
 
 
 class ConnectionManager:

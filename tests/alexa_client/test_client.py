@@ -3,18 +3,18 @@ from unittest import mock
 
 import pytest
 
-from avs_client.avs_client.client import AlexaVoiceServiceClient
+from alexa_client.alexa_client.client import AlexaClient
 
 
 @pytest.fixture
 def client():
-    class TestAlexaVoiceServiceClient(AlexaVoiceServiceClient):
+    class TestAlexaClient(AlexaClient):
         authentication_manager_class = mock.Mock()
         device_manager_class = mock.Mock()
         connection_manager_class = mock.Mock()
         ping_manager_class = mock.Mock()
 
-    client = TestAlexaVoiceServiceClient(
+    client = TestAlexaClient(
         client_id='test_client_id',
         secret='test_secret',
         refresh_token='test_refresh_token',
@@ -87,7 +87,7 @@ def test_client_send_audio_file(client):
     assert client.ping_manager.update_ping_deadline.call_count == 1
 
 
-@mock.patch('avs_client.avs_client.client.warnings.warn')
+@mock.patch('alexa_client.alexa_client.client.warnings.warn')
 def test_conditional_ping(mock_warn, client):
 
     client.conditional_ping()

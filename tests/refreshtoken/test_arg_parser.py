@@ -1,4 +1,4 @@
-from avs_client.refreshtoken import arg_parser
+from alexa_client.refreshtoken import arg_parser
 
 
 def test_parser_defaults():

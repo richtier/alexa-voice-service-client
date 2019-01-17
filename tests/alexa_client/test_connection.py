@@ -5,9 +5,9 @@ from unittest.mock import patch
 import pytest
 from requests.exceptions import HTTPError
 
-from avs_client.avs_client import connection
-from tests.avs_client.helpers import parse_multipart, TestConnectionMixin
-from tests.avs_client import fixtures
+from alexa_client.alexa_client import connection
+from tests.alexa_client.helpers import parse_multipart, TestConnectionMixin
+from tests.alexa_client import fixtures
 
 
 class TestConnectionManager(TestConnectionMixin, connection.ConnectionManager):

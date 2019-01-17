@@ -5,7 +5,7 @@ import urllib
 import pytest
 import requests
 
-from avs_client.refreshtoken import handlers, helpers, http_server
+from alexa_client.refreshtoken import handlers, helpers, http_server
 
 
 @pytest.fixture(scope='session')

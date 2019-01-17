@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qsl, urlparse
 
 import requests
-from avs_client.refreshtoken import helpers
+from alexa_client.refreshtoken import helpers
 
 
 class AmazonAlexaServiceLoginHandler(BaseHTTPRequestHandler):
