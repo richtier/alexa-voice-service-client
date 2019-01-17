@@ -5,8 +5,8 @@ from unittest import mock
 import pytest
 from requests_toolbelt import MultipartEncoder
 
-from avs_client.avs_client import helpers
-from tests.avs_client import fixtures
+from alexa_client.alexa_client import helpers
+from tests.alexa_client import fixtures
 
 
 @pytest.fixture

@@ -2,8 +2,8 @@ import json
 
 import requests
 
-from avs_client.avs_client import helpers
-from avs_client.refreshtoken.helpers import AmazonOauth2RequestManager
+from alexa_client.alexa_client import helpers
+from alexa_client.refreshtoken.helpers import AmazonOauth2RequestManager
 
 
 class AlexaVoiceServiceTokenAuthenticator:

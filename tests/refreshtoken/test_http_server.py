@@ -1,6 +1,6 @@
 from unittest.mock import call, Mock, patch
 
-from avs_client.refreshtoken import http_server, handlers
+from alexa_client.refreshtoken import http_server, handlers
 
 
 @patch.object(handlers.AmazonAlexaServiceLoginHandler, '__init__',

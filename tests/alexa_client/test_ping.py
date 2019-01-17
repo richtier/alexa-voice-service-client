@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from avs_client.avs_client import ping
+from alexa_client.alexa_client import ping
 from resettabletimer import FakeTimer
 
 

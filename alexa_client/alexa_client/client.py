@@ -1,11 +1,11 @@
 import warnings
 
-from avs_client.avs_client import (
+from alexa_client.alexa_client import (
     authentication, connection, device, helpers, ping
 )
 
 
-class AlexaVoiceServiceClient:
+class AlexaClient:
     authentication_manager_class = (
         authentication.AlexaVoiceServiceTokenAuthenticator
     )
@@ -65,3 +65,12 @@ class AlexaVoiceServiceClient:
         return self.connection_manager.ping(
             authentication_headers=headers,
         )
+
+
+class AlexaVoiceServiceClient(AlexaClient):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            'Deprecated. Use AlexaClient. Removing in v2.0.0.',
+            DeprecationWarning
+        )
+        super().__init__(*args, **kwargs)

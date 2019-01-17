@@ -6,11 +6,11 @@ from pydub import AudioSegment
 from pydub.playback import play
 import pyaudio
 
-from avs_client import AlexaVoiceServiceClient
+from alexa_client import AlexaClient
 
 
 def main(client_id, secret, refresh_token):
-    alexa_client = AlexaVoiceServiceClient(
+    alexa_client = AlexaClient(
         client_id=client_id,
         secret=secret,
         refresh_token=refresh_token,

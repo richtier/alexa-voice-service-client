@@ -4,7 +4,7 @@ from freezegun import freeze_time
 import pytest
 from requests.exceptions import HTTPError
 
-from avs_client.avs_client.authentication import (
+from alexa_client.alexa_client.authentication import (
     AlexaVoiceServiceTokenAuthenticator
 )
 
