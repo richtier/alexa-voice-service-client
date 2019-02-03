@@ -1,2 +1,20 @@
 [run]
-omit =.venv/*,venv/*,tests/*,setup.py,alexa_client/refreshtoken/serve.py,alexa_client/alexa_client/device.py,alexa_client/demo/*
+omit =
+    .venv/*
+    venv/*
+    tests/*
+    setup.py
+    alexa_client/refreshtoken/serve.py
+    alexa_client/alexa_client/device.py
+    alexa_client/demo/*
+    *__init__*
+
+
+[report]
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError

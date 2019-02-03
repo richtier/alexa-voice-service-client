@@ -25,14 +25,14 @@ pip install alexa_client[demo]
 ```py
 from alexa_client import AlexaClient
 
-alexa_client = AlexaClient(
+client = AlexaClient(
     client_id='my-client-id',
     secret='my-secret',
     refresh_token='my-refresh-token',
 )
-alexa_client.connect()  # authenticate and other handshaking steps
+client.connect()  # authenticate and other handshaking steps
 with open('./tests/resources/alexa_what_time_is_it.wav', 'rb') as f:
-    for i, directive in enumerate(alexa_client.send_audio_file(f)):
+    for i, directive in enumerate(client.send_audio_file(f)):
         if directive.name in ['Speak', 'Play']:
             with open(f'./output_{i}.mp3', 'wb') as f:
                 f.write(directive.audio_attachment)
@@ -62,7 +62,7 @@ stream = p.open(
     stream_callback=callback,
 )
 
-alexa_client = AlexaClient(
+client = AlexaClient(
     client_id='my-client-id',
     secret='my-secret',
     refresh_token='my-refresh-token',
@@ -72,8 +72,8 @@ buffer = io.BytesIO()
 try:
     stream.start_stream()
     print('listening. Press CTRL + C to exit.')
-    alexa_client.connect()
-    for i, directive in enumerate(alexa_client.send_audio_file(buffer)):
+    client.connect()
+    for i, directive in enumerate(client.send_audio_file(buffer)):
         if directive.name in ['Speak', 'Play']:
             with open(f'./output_{i}.mp3', 'wb') as f:
                 f.write(directive.audio_attachment)
@@ -100,9 +100,9 @@ This can be achieved by passing the same dialog request ID to multiple `send_aud
 from alexa_client.alexa_client import helpers
 
 dialog_request_id = helpers.generate_unique_id()
-directives_one = alexa_client.send_audio_file(audio_one, dialog_request_id=dialog_request_id)
-directives_two = alexa_client.send_audio_file(audio_two, dialog_request_id=dialog_request_id)
-directives_three = alexa_client.send_audio_file(audio_three, dialog_request_id=dialog_request_id)
+directives_one = client.send_audio_file(audio_one, dialog_request_id=dialog_request_id)
+directives_two = client.send_audio_file(audio_two, dialog_request_id=dialog_request_id)
+directives_three = client.send_audio_file(audio_three, dialog_request_id=dialog_request_id)
 
 ```
 
@@ -115,6 +115,35 @@ python -m alexa_client.demo.streaming_microphone \
     --client-secret="{enter-client-secret-here"} \
     --refresh-token="{enter-refresh-token-here}"
 ```
+
+### ASR Profiles
+Automatic Speech Recognition (ASR) profiles optimized for user speech from varying distances. By default CLOSE_TALK is used but this can be specified:
+
+```
+from alexa_client import constants
+
+client.send_audio_file(
+    audio_file=audio_file,
+    distance_profile=constants.NEAR_FIELD,  # or constants.FAR_FIELD
+)
+```
+
+### Audio format
+
+By default PCM audio format is assumed, but OPUS can be specified:
+
+```
+from alexa_client import constants
+
+client.send_audio_file(
+    audio_file=audio_file,
+    audio_format=constants.OPUS,
+)
+```
+
+When PCM format is specified the audio should be 16bit Linear PCM (LPCM16), 16kHz sample rate, single-channel, and little endian.
+
+When OPUS forat is specified the audio should be 16bit Opus, 16kHz sample rate, 32k bit rate, and little endian.
 
 ## Authentication
 
@@ -154,13 +183,11 @@ Follow the on-screen instructions shown at `http://localhost:9000` in your web b
 On completion Amazon will return your `refresh_token` - which you will require to [send audio](#file-audio) or [recorded voice](#microphone-audio).
 
 ## Steaming audio to AVS
-`alexa_client.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
-
-AVS requires the audio data to be 16bit Linear PCM (LPCM16), 16kHz sample rate, single-channel, and little endian.
+`AlexaClient.send_audio_file` streaming uploads a file-like object to AVS for great latency. The file-like object can be an actual file on your filesystem, an in-memory BytesIo buffer containing audio from your microphone, or even audio streaming from [your browser over a websocket in real-time](https://github.com/richtier/alexa-browser-client).
 
 ## Persistent AVS connection
 
-Calling `alexa_client.connect()` creates a persistent connection to AVS. A thread runs that pings AVS after 4 minutes of no request being made to AVS. This prevents the connection getting forcefully closed due to inactivity.
+Calling `AlexaClient.connect` creates a persistent connection to AVS. A thread runs that pings AVS after 4 minutes of no request being made to AVS. This prevents the connection getting forcefully closed due to inactivity.
 
 ## Unit test ##
 
@@ -168,7 +195,6 @@ To run the unit tests, call the following commands:
 
 ```sh
 git clone git@github.com:richtier/alexa-voice-service-client.git
-pip install -e .[test]
 make test_requirements
 make test
 ```

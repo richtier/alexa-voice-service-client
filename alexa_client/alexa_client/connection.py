@@ -75,7 +75,7 @@ class ConnectionManager:
 
     def send_audio_file(
         self, audio_file, device_state, authentication_headers,
-        dialog_request_id
+        dialog_request_id, distance_profile, audio_format
     ):
         """
         Send audio to AVS
@@ -97,8 +97,8 @@ class ConnectionManager:
                     'dialogRequestId': dialog_request_id,
                 },
                 'payload': {
-                    'profile': 'CLOSE_TALK',
-                    'format': 'AUDIO_L16_RATE_16000_CHANNELS_1'
+                    'profile': distance_profile,
+                    'format': audio_format
                 }
             }
         }

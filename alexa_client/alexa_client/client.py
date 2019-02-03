@@ -1,7 +1,7 @@
 import warnings
 
 from alexa_client.alexa_client import (
-    authentication, connection, device, helpers, ping
+    authentication, connection, constants, device, helpers, ping
 )
 
 
@@ -49,7 +49,10 @@ class AlexaClient:
                 device_state=self.device_manager.get_device_state(),
             )
 
-    def send_audio_file(self, audio_file, dialog_request_id=None):
+    def send_audio_file(
+        self, audio_file, dialog_request_id=None,
+        distance_profile=constants.CLOSE_TALK, audio_format=constants.PCM
+    ):
         dialog_request_id = dialog_request_id or helpers.generate_unique_id()
         with self.ping_manager.update_ping_deadline():
             headers = self.authentication_manager.get_headers()
@@ -58,6 +61,8 @@ class AlexaClient:
                 device_state=self.device_manager.get_device_state(),
                 audio_file=audio_file,
                 dialog_request_id=dialog_request_id,
+                distance_profile=distance_profile,
+                audio_format=audio_format,
             )
 
     def ping(self):
