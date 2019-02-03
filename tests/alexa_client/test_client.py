@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 
 from alexa_client.alexa_client.client import AlexaClient
+from alexa_client.alexa_client import constants
 
 
 @pytest.fixture
@@ -83,6 +84,31 @@ def test_client_send_audio_file(client):
         device_state={'device': 'state'},
         authentication_headers={'auth': 'value'},
         dialog_request_id='dialog-id',
+        distance_profile=constants.CLOSE_TALK,
+        audio_format=constants.PCM,
+    )
+    assert client.ping_manager.update_ping_deadline.call_count == 1
+
+
+def test_client_send_audio_file_non_defaults(client):
+    client.authentication_manager.get_headers.return_value = {'auth': 'value'}
+    client.device_manager.get_device_state.return_value = {'device': 'state'}
+
+    audio_file = BytesIO(b'things')
+    client.send_audio_file(
+        audio_file,
+        dialog_request_id='dialog-id',
+        distance_profile=constants.FAR_FIELD,
+        audio_format=constants.OPUS,
+    )
+
+    assert client.connection_manager.send_audio_file.call_args == mock.call(
+        audio_file=audio_file,
+        device_state={'device': 'state'},
+        authentication_headers={'auth': 'value'},
+        dialog_request_id='dialog-id',
+        distance_profile=constants.FAR_FIELD,
+        audio_format=constants.OPUS,
     )
     assert client.ping_manager.update_ping_deadline.call_count == 1
 
