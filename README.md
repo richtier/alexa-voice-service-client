@@ -196,7 +196,7 @@ To run the unit tests, call the following commands:
 ```sh
 git clone git@github.com:richtier/alexa-voice-service-client.git
 make test_requirements
-make test
+pytest
 ```
 
 ## Other projects ##

@@ -65,13 +65,13 @@ class ConnectionManager:
             'Content-Type': multipart_data.content_type
         }
         stream_id = self.connection.request(
-            'GET',
+            'POST',
             '/v20160207/events',
             body=multipart_data,
             headers=headers,
         )
         response = self.connection.get_response(stream_id)
-        assert response.status in [http.client.NO_CONTENT, http.client.OK]
+        assert response.status == http.client.NO_CONTENT
 
     def send_audio_file(
         self, audio_file, device_state, authentication_headers,
