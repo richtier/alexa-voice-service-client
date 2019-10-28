@@ -22,19 +22,4 @@ test_requirements:
 	pip install -e .[test]
 
 
-lint:
-	flake8 --exclude=.venv,venv,snowboy,build
-
-
-test:
-	pytest $1 \
-		--ignore=venv \
-		--ignore=.venv \
-		--ignore=build \
-		--cov=./ \
-		--cov-config=.coveragerc \
-		--capture=no \
-		--last-failed \
-		-vv
-
-.PHONY: build publish_test publish test_requirements test
+.PHONY: build publish_test publish test_requirements

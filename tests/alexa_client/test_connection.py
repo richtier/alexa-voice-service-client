@@ -81,12 +81,11 @@ def test_establish_downstream_conncetion(manager, authentication_headers):
     }
 
 
-@pytest.mark.parametrize("status", [200, 204])
 def test_synchronise_device_state(
-    status, manager, authentication_headers, device_state
+    manager, authentication_headers, device_state
 ):
     manager.create_connection()
-    manager.mock_response(status_code=status)
+    manager.mock_response(status_code=204)
 
     manager.synchronise_device_state(
         authentication_headers=authentication_headers,
@@ -96,7 +95,7 @@ def test_synchronise_device_state(
     headers = dict(list(manager.connection.recent_stream.headers.items()))
 
     assert headers == {
-        b':method': b'GET',
+        b':method': b'POST',
         b':scheme': b'https',
         b':authority': b'avs-alexa-eu.amazon.com',
         b':path': b'/v20160207/events',
