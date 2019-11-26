@@ -59,8 +59,14 @@ def audio_file():
 def test_create_connection(manager):
     manager.create_connection()
 
-    assert manager.connection.host == 'avs-alexa-eu.amazon.com'
+    assert manager.connection.host == constants.BASE_URL_EUROPE
     assert manager.connection.secure is True
+
+
+def test_create_connection_explicit_base_url(manager):
+    manager.create_connection(base_url=constants.BASE_URL_NORTH_AMERICA)
+
+    assert manager.connection.host == constants.BASE_URL_NORTH_AMERICA
 
 
 def test_establish_downstream_conncetion(manager, authentication_headers):
@@ -76,7 +82,7 @@ def test_establish_downstream_conncetion(manager, authentication_headers):
         b':scheme': b'https',
         b':method': b'GET',
         b':path': b'/v20160207/directives',
-        b':authority': b'avs-alexa-eu.amazon.com',
+        b':authority': b'alexa.eu.gateway.devices.a2z.com',
         b'auth': b'value',
     }
 
@@ -97,7 +103,7 @@ def test_synchronise_device_state(
     assert headers == {
         b':method': b'POST',
         b':scheme': b'https',
-        b':authority': b'avs-alexa-eu.amazon.com',
+        b':authority': b'alexa.eu.gateway.devices.a2z.com',
         b':path': b'/v20160207/events',
         b'content-type': b'multipart/form-data; boundary=boundary',
         b'auth': b'value',
@@ -148,7 +154,7 @@ def test_send_audio_file(
     assert headers == {
         b':method': b'POST',
         b':scheme': b'https',
-        b':authority': b'avs-alexa-eu.amazon.com',
+        b':authority': b'alexa.eu.gateway.devices.a2z.com',
         b':path': b'/v20160207/events',
         b'content-type': b'multipart/form-data; boundary=boundary',
         b'auth': b'value',
@@ -319,6 +325,6 @@ def test_ping(manager, authentication_headers):
         b':scheme': b'https',
         b':method': b'GET',
         b':path': b'/ping',
-        b':authority': b'avs-alexa-eu.amazon.com',
+        b':authority': b'alexa.eu.gateway.devices.a2z.com',
         b'auth': b'value',
     }

@@ -112,7 +112,7 @@ Run the streaming microphone audio demo to use this feature:
 pip install alexa_client[demo]
 python -m alexa_client.demo.streaming_microphone \
     --client-id="{enter-client-id-here}" \
-    --client-secret="{enter-client-secret-here"} \
+    --client-secret="{enter-client-secret-here}" \
     --refresh-token="{enter-refresh-token-here}"
 ```
 
@@ -144,6 +144,25 @@ client.send_audio_file(
 When PCM format is specified the audio should be 16bit Linear PCM (LPCM16), 16kHz sample rate, single-channel, and little endian.
 
 When OPUS forat is specified the audio should be 16bit Opus, 16kHz sample rate, 32k bit rate, and little endian.
+
+### Base URL
+
+`base_url` can be set to improve latency. Choose a region closest to your location.
+
+```
+from alexa_client.alexa_client import constants
+
+client = AlexaClient(
+    client_id='my-client-id',
+    secret='my-secret',
+    refresh_token='my-refresh-token',
+    base_url=constants.BASE_URL_ASIA
+)
+```
+
+The default base URL is Europe. The available constants are BASE_URL_EUROPE, BASE_URL_ASIA and BASE_URL_NORTH_AMERICA but you can pass any string if required.
+
+[Read more](https://developer.amazon.com/docs/alexa-voice-service/api-overview.html#endpoints)
 
 ## Authentication
 

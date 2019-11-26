@@ -5,16 +5,18 @@ from requests_toolbelt import MultipartEncoder
 from requests.exceptions import HTTPError
 from hyper import HTTP20Connection
 
-from alexa_client.alexa_client import helpers
+from alexa_client.alexa_client import constants, helpers
 
 
 class ConnectionManager:
-    host = 'avs-alexa-eu.amazon.com'
     connection = None
+    # TODO: in next breaking change release rename to `base_url` and move to
+    # client.connect default kwargs
+    host = constants.BASE_URL_EUROPE
 
-    def create_connection(self):
+    def create_connection(self, base_url=None):
         self.connection = HTTP20Connection(
-            host=self.host, secure=True, force_proto='h2',
+            host=base_url or self.host, secure=True, force_proto='h2'
         )
 
     def establish_downchannel_stream(self, authentication_headers):

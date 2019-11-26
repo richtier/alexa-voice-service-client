@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0
+[Full Changelog](https://github.com/richtier/alexa-voice-service-client/pull/35)
+### Implemented enhancements
+- Allow setting base_url when instantiating the client
+
 ## 1.4.1
 [Full Changelog](https://github.com/richtier/alexa-voice-service-client/pull/34)
 ### Implemented enhancements

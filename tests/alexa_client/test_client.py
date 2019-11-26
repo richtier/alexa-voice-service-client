@@ -34,12 +34,39 @@ def test_client_authentication_manager(client):
     )
 
 
+def test_base_url(client):
+
+    class TestAlexaClient(AlexaClient):
+        authentication_manager_class = mock.Mock()
+        device_manager_class = mock.Mock()
+        connection_manager_class = mock.Mock()
+        ping_manager_class = mock.Mock()
+
+    client = TestAlexaClient(
+        client_id='test_client_id',
+        secret='test_secret',
+        refresh_token='test_refresh_token',
+        base_url=constants.BASE_URL_NORTH_AMERICA
+    )
+    client.ping_manager.update_ping_deadline = mock.MagicMock()
+
+    client.connect()
+
+    assert client.connection_manager.create_connection.call_count == 1
+    assert client.connection_manager.create_connection.call_args == mock.call(
+        base_url=constants.BASE_URL_NORTH_AMERICA
+    )
+
+
 def test_client_connect(client):
     client.connect()
 
     assert client.authentication_manager.prefetch_api_token.call_count == 1
     assert (
         client.connection_manager.establish_downchannel_stream.call_count == 1
+    )
+    assert client.connection_manager.create_connection.call_args == mock.call(
+        base_url=None
     )
     assert client.connection_manager.synchronise_device_state.call_count == 1
 

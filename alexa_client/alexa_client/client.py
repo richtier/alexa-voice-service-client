@@ -17,18 +17,20 @@ class AlexaClient:
     authentication_manager = None
     connection_manager = None
     device_manager = None
+    base_url = None
 
-    def __init__(self, client_id, secret, refresh_token):
+    def __init__(self, client_id, secret, refresh_token, base_url=None):
         self.authentication_manager = self.authentication_manager_class(
             client_id=client_id, secret=secret, refresh_token=refresh_token,
         )
         self.device_manager = self.device_manager_class()
         self.connection_manager = self.connection_manager_class()
         self.ping_manager = self.ping_manager_class(60*4, self.ping)
+        self.base_url = base_url
 
     def connect(self):
         self.authentication_manager.prefetch_api_token()
-        self.connection_manager.create_connection()
+        self.connection_manager.create_connection(base_url=self.base_url)
         self.establish_downchannel_stream()
         self.synchronise_device_state()
         self.ping_manager.start()
