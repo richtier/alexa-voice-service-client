@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='alexa_client',
-    version='1.4.1',
+    version='1.5.0',
     packages=find_packages(exclude=["tests.*", "tests"]),
     url='https://github.com/richtier/alexa-voice-service-client',
     license='MIT',
