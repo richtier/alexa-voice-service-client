@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1
+[Full Changelog](https://github.com/richtier/alexa-voice-service-client/pull/46)
+### Fixed bugs
+- Handle 204 and 200 responses on synchronise device state
+
 ## 1.5.0
 [Full Changelog](https://github.com/richtier/alexa-voice-service-client/pull/35)
 ### Implemented enhancements

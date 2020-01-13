@@ -73,7 +73,7 @@ class ConnectionManager:
             headers=headers,
         )
         response = self.connection.get_response(stream_id)
-        assert response.status == http.client.NO_CONTENT
+        assert response.status in (http.client.NO_CONTENT, http.client.OK)
 
     def send_audio_file(
         self, audio_file, device_state, authentication_headers,
